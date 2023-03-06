@@ -25,3 +25,7 @@ require __DIR__.'/usuarios.php';
 require __DIR__.'/empresas.php';
 require __DIR__.'/legajos.php';
 require __DIR__.'/recibos.php';
+
+Route::get('/{any}', function () {
+ return  Inertia::render('PaginaNoEncontrada');
+})->where('any', '.*');

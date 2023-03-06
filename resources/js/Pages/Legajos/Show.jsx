@@ -106,14 +106,13 @@ function Show() {
                     <label className='font-bold'>Email<span className="rojo">*</span></label>
                     <input
                         name="email"
-                        type="text"
+                        type="email"
                         className="input"
                         onChange={(e) => setData("email", e.target.value)}
                         value={data.email}
                     />
                     {errors.email && <ErrorForm content={errors.email}/>}
                 </div>
-                
             </div>
             <div className="form-padre">
                 <div className="form-uno">
@@ -121,7 +120,7 @@ function Show() {
                     <Select
                         defaultValue={empresas.find((co) => co.value === data.empresa_id)}
                         name="empresas"
-                        onChange={(option) => setData('empresa_id',option.value)}
+                        isDisabled
                         className="py-2"
                         styles={{
                             control: (base) => ({
@@ -130,7 +129,8 @@ function Show() {
                                 border: '1px solid lightgray',
                                 boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
                             }),
-                        }}
+                            singleValue: (styles) => {return {...styles,color: 'black',}
+                        }}}
                         options={empresas}
                     />
                     {errors.empresa && <ErrorForm content={errors.empresa}/>}

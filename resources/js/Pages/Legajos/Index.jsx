@@ -54,7 +54,6 @@ function Index() {
     }, [legajos]);
     //
 
-
     const [legajoSeleccionado, setLegajoSeleccionado] = useState("");
 
     function handleLegajo(id) {
@@ -92,7 +91,7 @@ function Index() {
                             <button className="btn-verde ml-2" onClick={handleDeshabilitar}>Habilitar</button>)}
                     </div>
                     <div className='flex w-3/5 justify-end'>
-                        <div className="w-1/3">
+                        {/* <div className="w-1/3">
                             <Select
                                 name="empresas"
                                 onChange={(option) => setEmpresaSeleccionada(option.value)}
@@ -109,7 +108,7 @@ function Index() {
                                 placeholder="Empresa"
                                 value={empresaSeleccionada!=="" ? empresas.find(e=>e.value === empresaSeleccionada) : ""}
                             />
-                        </div>
+                        </div> */}
                         
                         <div className="w-1/3 mx-4">
                             <Search
@@ -118,14 +117,14 @@ function Index() {
                                 handleSearch={handleSearch}
                             />
                         </div>
-                        <button
+                        {/* <button
                             onClick={()=>{setEmpresaSeleccionada("") ;setValues({search:""})}}
                             type="button"
-                            className="pr-4 underline"
+                            className="mr-4 underline"
                             title="Sacar Filtros"
                         >
-                            <img src="/img/sacarfiltros.svg" className={empresaSeleccionada===""?"filter-grey":"filter-blue"}/>
-                        </button>
+                            <img src="/img/sacarfiltros.svg" className={(empresaSeleccionada==="")?"filter-grey":"filter-blue"}/>
+                        </button> */}
                     </div>
                 </div>
 
@@ -162,7 +161,7 @@ function Index() {
                             ))}
                              {legajos?.length == 0 &&
                             <tr className="text-center">
-                            <td colSpan="5">No se cargaron datos</td>
+                                <td colSpan="5">No se cargaron datos</td>
                             </tr>}
                         </tbody>
                     </table>
@@ -173,4 +172,4 @@ function Index() {
 }
 
 export default Index;
-Index.layout = (page) => <Panel title="Usuarios" children={page}/>;
+Index.layout = (page) => <Panel title="Legajos" children={page}/>;

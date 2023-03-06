@@ -34,26 +34,17 @@ class EmpresaRequest extends FormRequest
                     'domicilio' => 'required|array',
                     'domicilio.domicilio' => 'required|string',
                     'domicilio.localidad_id' => 'required|integer|exists:localidades,id',
-                   /* ,
-                    'url_api' => 'nullable|string',
-                    'db_api' => 'nullable|string',
-                    'usuario_api' => 'nullable|string',
-                    'password_api' => 'nullable|string', */
                     'logo_file_path' => 'nullable|file',
                 ];
             
         }elseif($this->getMethod() === 'PATCH'){
             $rules = [
-                'razon_social' => 'required|string',
-                'cuit' => 'required|string|unique:empresas', Rule::unique('empresas','cuit')->ignore($this->empresa->id),
-                'domicilio' => 'required|array',
-                'domicilio.domicilio' => 'required|string',
-                /*'domicilio.localidad' => 'required|integer|exists:localidades,id',
-                'url_api' => 'nullable|string',
-                'db_api' => 'nullable|string',
-                'usuario_api' => 'nullable|string',
-                'password_api' => 'nullable|string', */
-                'logo_file_path' => 'nullable|string',
+                'data.razon_social' => 'required|string', Rule::unique('empresas','razon_social')->ignore($this->empresa->id),
+                'data.cuit' => 'required|string', Rule::unique('empresas','cuit')->ignore($this->empresa->id),
+                'data.domicilio' => 'required|array',
+                'data.domicilio.domicilio' => 'required|string',
+                'data.domicilio.localidad_id' => 'required|integer|exists:localidades,id',
+                'data.logo_file_path' => 'nullable', 
             ];
         }
         return $rules;

@@ -117,7 +117,7 @@ function Create() {
                     <label className='font-bold'>Email<span className="rojo">*</span></label>
                     <input
                         name="email"
-                        type="text"
+                        type="email"
                         className="input"
                         onChange={(e) => setData("email", e.target.value)}
                         value={data.email}
@@ -126,40 +126,19 @@ function Create() {
                 </div>
             </div>
 
-            <div className="form-padre">
-                <div className="form-uno">
-                    <label className='font-bold'>Empresa<span className="rojo">*</span></label>
-                    <Select
-                        defaultValue={empresas.find((co) => co.value === data.empresas)}
-                        name="empresas"
-                        onChange={(option) => setData('empresa_id',option.value)}
-                        className="py-2"
-                        styles={{
-                            control: (base) => ({
-                                ...base,
-                                '&:hover': { borderColor: '#b03407' },
-                                border: '1px solid lightgray',
-                                boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
-                            }),
-                        }}
-                        options={empresas}
+            <div className="form-uno pr-16">
+                    <label className='font-bold'>
+                        Fecha de Alta
+                    </label>
+                    <input
+                        name="fecha_alta"
+                        type="date"
+                        className="input"
+                        value={data.fecha_alta}
+                        onChange={(e) =>setData("fecha_alta", e.target.value)}
                     />
-                    {errors.empresa && <ErrorForm content={errors.empresa}/>}
+                    {errors.fecha_alta && <ErrorForm content={errors.fecha_alta}/>}
                 </div>
-                <div className="form-dos">
-                        <label className='font-bold'>
-                            Fecha de Alta
-                        </label>
-                        <input
-                            name="fecha_alta"
-                            type="date"
-                            className="input"
-                            value={data.fecha_alta}
-                            onChange={(e) =>setData("fecha_alta", e.target.value)}
-                        />
-                        {errors.fecha_alta && <ErrorForm content={errors.fecha_alta}/>}
-                    </div>
-            </div>
 
             <div className="flex items-center mt-4 ml-8 w-full">
                 <div className="flex flex-row w-1/2">

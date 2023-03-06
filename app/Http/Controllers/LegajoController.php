@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Requests\LegajoRequest;
 use App\Models\Legajo;
 use App\Models\Empresa;
+use App\Models\Usuario;
 
 class LegajoController extends Controller
 {
@@ -53,10 +55,8 @@ class LegajoController extends Controller
         ]);
     }
 
-    public function store(Empresa $empresa,LegajoRequest $request): RedirectResponse
+    public function store(LegajoRequest $request,Empresa $empresa): RedirectResponse
     {
-       /*  dd($request->all()); */
-        $empresa_id=$empresa->id;
         $data = $request->validated();
         DB::beginTransaction();
         $legajo = Legajo::create([
@@ -64,15 +64,28 @@ class LegajoController extends Controller
             'numero_legajo' => $data['numero_legajo'],
             'cuil' => $data['cuil'],
             'fecha_alta' => $data['fecha_alta'],
-            'empresa_id' => $data['empresa_id'],
             'email' => $data['email'],
+            'empresa_id' => $empresa->id
         ]);
 
+        if($request->generar_usuario){
+            $usuarioAsociado = new Usuario();
+            $usuarioAsociado->email = $data['email'];
+            $usuarioAsociado->nombre = $data['nombre'];
+            $random = str_shuffle('abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890!$%^&!$%^&');
+            $password = substr($random, 0, 10);
+            $usuarioAsociado->password = Hash::make($password);
+            $usuarioAsociado->save();
+            $usuarioAsociado->roles()->attach(6);
+            $usuarioAsociado->empresas()->attach($empresa->id);
+            $legajo->usuario_id = $usuarioAsociado->id;
+            $legajo->save();
+        }
         DB::commit();
-        return redirect()->route('index_legajos',$empresa_id)->with('exito','Legajo Creado!');
+        return redirect()->route('index_legajos',$empresa->id)->with('exito','Legajo Creado!');
     }
 
-    public function update(Empresa $empresa, Legajo $legajo,LegajoRequest $request)/* : RedirectResponse */
+    public function update(Empresa $empresa, Legajo $legajo, LegajoRequest $request)/* : RedirectResponse */
     {
         $data = $request->validated();
         DB::beginTransaction();
@@ -91,7 +104,7 @@ class LegajoController extends Controller
     }
 
 
-    public function cambioEstado(Empresa $empresa, Legajo $legajo,Request $request ){
+    public function cambioEstado(Empresa $empresa, Legajo $legajo,Request $request){
         $legajo->activo = !$legajo->activo;
         $legajo->save();
         if($legajo->activo == 0){

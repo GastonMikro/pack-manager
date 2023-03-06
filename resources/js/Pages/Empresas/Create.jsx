@@ -141,7 +141,6 @@ function Create() {
                     type="file"
                     name="logo_file_path"
                     accept="image/*"
-                    value=""
                     onChange={(e)=>setData("logo_file_path", e.target.files[0])}       
                 />
                 {errors.logo_file_path && <ErrorForm content={errors.logo_file_path}/>}

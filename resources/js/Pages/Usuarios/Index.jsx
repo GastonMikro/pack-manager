@@ -80,8 +80,8 @@ function Index() {
                     <table className="table">
                         <thead className="table-header">
                             <tr>
-                                <th>Email</th>
                                 <th>Nombre de Usuario</th>
+                                <th>Email</th>
                                 <th>Estado</th>
                             </tr>
                         </thead>
@@ -92,8 +92,8 @@ function Index() {
                                     onClick={()=>handleUsuario(usuario.id)}
                                     key={usuario.id}
                                 >
-                                    <td>{usuario.email}</td>
                                     <td>{usuario.nombre}</td>
+                                    <td>{usuario.email}</td>
                                     <td>
                                         {usuario.activo == 1 ? 
                                             <img src="/img/Tick.svg" alt="Tick"/>:

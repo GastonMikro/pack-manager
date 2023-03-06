@@ -68,7 +68,7 @@ function Create() {
                     <label className='font-bold'>Email<span className="rojo">*</span></label>
                     <input
                         name="email"
-                        type="text"
+                        type="email"
                         className="input"
                         onChange={(e) => setData("email", e.target.value)}
                         value={data.email}
@@ -91,7 +91,7 @@ function Create() {
                     {errors.password && <ErrorForm content={errors.password}/>}
                 </div>
                 <div className="form-dos">
-                    <label className='font-bold'>
+                   {/*  <label className='font-bold'>
                         Contraseña Autenticación
                     </label>
                     <input
@@ -101,7 +101,7 @@ function Create() {
                         value={data.password_autenticacion}
                         onChange={(e) =>setData("password_autenticacion", e.target.value)}
                     />
-                    {errors.password_autenticacion && <ErrorForm content={errors.password_autenticacion}/>}
+                    {errors.password_autenticacion && <ErrorForm content={errors.password_autenticacion}/>} */}
                 </div>
             </div>
             <div className="form-padre">
@@ -121,7 +121,7 @@ function Create() {
                                 boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
                             }),
                         }}
-                     options={empresas}
+                        options={empresas}
                     />
                     {errors.empresas && <ErrorForm content={errors.empresas}/>}
                 </div>

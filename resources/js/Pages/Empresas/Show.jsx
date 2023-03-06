@@ -14,7 +14,7 @@ function Show() {
         razon_social: empresa.razon_social ||"",
         cuit: empresa.cuit ||"",
         domicilio: empresa?.domicilio||{},
-        logo: empresa.logo_file_path||null,
+        logo_file_path: empresa.logo_file_path||null,
     })
 
     function handleCuit(e) {
@@ -83,9 +83,25 @@ function Show() {
     let depto = departamentos.filter(departamento => departamento.id === localidad[0]?.departamento_id)
     let provincia = provincias.find(provincia => provincia.id === depto[0]?.provincia_id)
 
+    const [avatar, setAvatar] = useState(!data.logo_file_path ? '/img/Cuenta.png' : data.logo_file_path)
+    const [archivoElegido, setArchivoElegido] = useState()
+    useEffect(() => {
+        if (archivoElegido) {
+            const objectUrl = URL.createObjectURL(archivoElegido)
+            setAvatar(objectUrl)
+            setData('logo_file_path',archivoElegido)
+            return () => URL.revokeObjectURL(objectUrl)
+        }
+    },[archivoElegido])
+
     function submit(e) {
         e.preventDefault();
-        router.post(route('alta_empresa'), data)
+        router.post(route("editar_empresa",empresa), {
+            _method: 'patch',
+            data: data
+        },{
+            forceFormData: true
+        })
     }
 
     return (
@@ -104,8 +120,26 @@ function Show() {
                 <button className="btn-rojo ml-2">Cancelar</button>
             </Link >
         </div>
+
+        <div className="w-10/12 mt-4 mx-auto flex flex-col justify-center items-center h-3/4 pr-4 max-h-full">
+            <img src={avatar} alt="Logo Empresa" className="w-1/4 mb-4"/>
+            <div>
+                <input
+                    type="file"
+                    onChange={(e) => {setArchivoElegido(e.target.files[0])}}
+                    hidden
+                    id="logo"
+                />
+                    <label htmlFor="logo" className="cursor-pointer">
+                        <img src="/img/Cambiar.png" alt="Cambiar Logo"/>
+                    </label>
+                {errors.logo_file_path && <ErrorForm content={errors.logo_file_path}/>}
+            </div>
+        </div>
+
         <form className="px-8"> 
             <div className="form-padre">
+          
                 <div className="form-uno">
                     <label className="font-bold">Razón Social<span className="rojo">*</span></label>
                     <input
@@ -115,7 +149,7 @@ function Show() {
                         onChange={(e) => setData("razon_social", e.target.value)}
                         value={data.razon_social}
                     />
-                     {errors.razon_social && <ErrorForm content={errors.razon_social}/>}
+                     {errors['data.razon_social'] && <ErrorForm content={errors['data.razon_social']}/>}
                 </div>
                 <div className="form-dos">
                     <label className="font-bold">Cuit<span className="rojo">*</span></label>
@@ -126,20 +160,8 @@ function Show() {
                         onChange={(e) => handleCuit(e)}
                         value={data.cuit}
                     />
-                    {errors.cuit && <ErrorForm content={errors.cuit}/>}
+                    {errors['data.cuit'] && <ErrorForm content={errors['data.cuit']}/>}
                 </div>
-            </div>
-            <div className="form-uno pr-16">
-                <label className="font-bold">Logo</label>
-                <input
-                    className="h-9 rounded shadow-gray-400 my-2 block w-full text-lg text-gray-900 bg-white border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-100 dark:placeholder-gray-100"
-                    type="file"
-                    name="logo_file_path"
-                    accept="image/*"
-                    value=""
-                    onChange={(e)=>setData("logo_file_path", e.target.files[0].name)}       
-                />
-                {errors.logo_file_path && <ErrorForm content={errors.logo_file_path}/>}
             </div>
             <div className="form-padre px-8 my-4 border-t-2">
                 <div className="w-full pt-4">

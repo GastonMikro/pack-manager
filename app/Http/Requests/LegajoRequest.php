@@ -28,25 +28,23 @@ class LegajoRequest extends FormRequest
     {
         $rules = [];
         if($this->getMethod() === 'POST'){
-                $rules = [
-                    'nombre' => 'required|string',
-                    'numero_legajo' => 'required|integer',
-                    'cuil' => 'required|string',
-                    'fecha_alta' => 'nullable|date',
-                    'empresa_id' => 'required|integer',
-                    'generar_usuario' => 'boolean',
-                    'email' => 'email|unique:legajos',
-                ];
-            
+            $rules = [
+                'nombre' => 'required|string|min:6',
+                'numero_legajo' => 'required|integer',
+                'cuil' => ['required' , 'size:13' , 'unique:legajos,cuil' , new CustomCuit],
+                'fecha_alta' => 'nullable|date',
+                'empresa_id' => 'nullable|integer',
+                'generar_usuario' => 'boolean',
+                'email' => 'email:rfc,dns|unique:legajos'
+            ];
         }elseif($this->getMethod() === 'PATCH'){
             $rules = [
                 'nombre' => 'required|string',
                 'numero_legajo' => 'required|integer',
-                'cuil' => 'required|string',Rule::unique('legajos')->ignore($this->legajo->id),
-                'email' => 'email',Rule::unique('legajos')->ignore($this->legajo->id),
+                'cuil' => ['required' , 'size:13' , Rule::unique('legajos' , 'cuil')->ignore($this->legajo->id), new CustomCuit],
+                'email' => 'email:rfc,dns',Rule::unique('legajos')->ignore($this->legajo->id),
                 'fecha_alta' => 'nullable|date',
-                'empresa_id' => 'required|integer',
-                 /* 'usuario_id' => 'required|integer' */
+                'empresa_id' => 'nullable|integer',
             ];
         }
         return $rules;

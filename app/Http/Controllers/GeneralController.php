@@ -28,9 +28,11 @@ class GeneralController extends Controller
 
     public function dashboard(Empresa $empresa): Response
     {
+        $empresa->legajos = $empresa->legajos()->get();
+        $empresa->usuarios = $empresa->usuarios()->get();
         return Inertia::render('Dashboard',[
             'empresa_id' => $empresa->id,
-            'empresas' =>Empresa::all(),
+            'empresa' => $empresa,
         ]);
     }
 

@@ -1,5 +1,5 @@
 import { router } from "@inertiajs/core";
-import { Head, Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
@@ -15,17 +15,15 @@ export default function Panel({title, children}) {
         return empresa
     })
 
-    const { data, setData } = useForm({empresa: ""})
-
-    useEffect(() => {
-        setEmpresa_id(data.empresa)
-        router.get(route("dashboard", data.empresa))
-    }, [data]);
+    function handleEmpresa(option){
+        setEmpresa_id(option)
+        router.get(route("dashboard", option))
+    }
 
     const [procesos, setProcesos] = useState(false);
     const [recibos, setRecibos] = useState(false);
 
-    function handleEditarUsuario() {router.get(route("ver_usuario",  ID,))}
+    function handleEditarUsuario() {router.get(route("ver_usuario", {empresa: empresa_id, usuario:ID}))}
 
     function logout() {router.post(route("logout"))}
 
@@ -35,12 +33,11 @@ export default function Panel({title, children}) {
                 <nav className="z-50 fixed w-screen bg-pack-100 px-2 sm:flex justify-between items-center border-b-1 border-gray-600 font-bold" style={{height: "7vh"}}>
                     
                 <div className="flex px-4 items-center justify-between sm:py-0 pb-1">
-                    
                         <Select
-                            /* defaultValue={optionscompanies.find((empresa) => empresa?.value === data.empresa)} */
+                            defaultValue={empresas_input.find(empresa=>empresa.value==empresa_id)}
                             placeholder="Seleccionar Empresa"
                             name="empresa"
-                            onChange={(option) => setData("empresa", option.value) }
+                            onChange={(option) => handleEmpresa(option.value)}
                             isSearchable={true}
                             styles={{
                                 control: (base) => ({
@@ -52,10 +49,10 @@ export default function Panel({title, children}) {
                                 }),
                             }}
                             options={empresas_input}
-                        />{/* : <p className="text-white">{empresa_id}</p> */}
+                        />
                     </div>
                     
-                    <div className="flex cursor-pointer">
+                    <div className="flex cursor-pointer pr-4">
                         <p className=" py-4 text-white hover:underline underline-offset-2 font-semibold mr-4" onClick={handleEditarUsuario}>
                             {usePage().props.auth.user.email}
                         </p>
