@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Empresa;
 
 class GeneralController extends Controller
@@ -28,8 +29,9 @@ class GeneralController extends Controller
 
     public function dashboard(Empresa $empresa): Response
     {
-        $empresa->legajos = $empresa->legajos()->get();
-        $empresa->usuarios = $empresa->usuarios()->get();
+        $empresa->legajos = $empresa->legajos()->orderBy('nombre','ASC')->get();
+        $empresa->usuarios = $empresa->usuarios()->orderBy('nombre','ASC')->get();
+        $empresa->logo_file_path = Storage::url($empresa->logo_file_path);
         return Inertia::render('Dashboard',[
             'empresa_id' => $empresa->id,
             'empresa' => $empresa,

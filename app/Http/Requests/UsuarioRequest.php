@@ -28,14 +28,14 @@ class UsuarioRequest extends FormRequest
     {
         $rules = [];
         if($this->getMethod() === 'POST'){
-                $rules = [
-                    'nombre' => 'required|string',
-                    'email' => 'required|email|unique:users',
-                    'password' => 'required|string',
-                    'password_autenticacion' => 'nullable|string',
-                    'roles' => 'required|array',
-                    'empresas' => 'required|array'
-                ];
+            $rules = [
+                'nombre' => 'required|string',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|string',
+                'password_autenticacion' => 'nullable|string',
+                'roles' => 'required|array',
+                'empresas' => 'required|array'
+            ];
             
         }elseif($this->getMethod() === 'PATCH'){
             $rules = [

@@ -10,6 +10,8 @@ function Show() {
 
     let {errors, provincias, localidades, departamentos, empresa}=usePage().props
 
+    console.log(errors)
+
     const { data, setData } = useForm({
         razon_social: empresa.razon_social ||"",
         cuit: empresa.cuit ||"",
@@ -117,7 +119,7 @@ function Show() {
         <div className="botonera">
             <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
             <Link href={route("index_empresas") }>
-                <button className="btn-rojo ml-2">Cancelar</button>
+                <button className="btn-rojo ml-2">Volver</button>
             </Link >
         </div>
 
@@ -139,7 +141,6 @@ function Show() {
 
         <form className="px-8"> 
             <div className="form-padre">
-          
                 <div className="form-uno">
                     <label className="font-bold">Razón Social<span className="rojo">*</span></label>
                     <input
@@ -199,20 +200,19 @@ function Show() {
                             </label>
                             <Select
                                 placeholder="Seleccionar"
-                                name="localidad"
+                                name="localidad_id"
                                 options={localidadesFiltradas}
                                 onChange={(option) =>
                                     {setDomicilio((prev) => ({
                                         ...prev,
-                                        localidad: option.value,
+                                        localidad_id: option.value,
                                     }))
-                                    errors["domicilio.localidad"]=""
+                                    errors["domicilio.localidad_id"]=""
                                 }}
                                 className=" my-2"
                                 defaultValue={localidad[0] || ""}
-                                
                             />
-                            {errors["domicilio.localidad"] && <ErrorForm content={errors["domicilio.localidad"]}/>}
+                            {errors["domicilio.localidad_id"] && <ErrorForm content={errors["domicilio.localidad_id"]}/>}
                         </div>
                     </div>
                     <div className="w-1/3 pr-6">

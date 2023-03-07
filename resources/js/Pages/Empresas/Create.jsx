@@ -76,12 +76,10 @@ function Create() {
         let filtrados=departamentos.filter(d => d.provincia_id === option.id)
         setDepartamentosFiltrados(filtrados)
     }
-
     function handleLocalidades(option){
         let filtradas=localidades.filter(l => l.departamento_id === option.id)
         setLocalidadesFiltradas(filtradas)
     }
-
     let localidad = localidades.filter(localidad => localidad.id === domicilio.localidad)
     let depto = departamentos.filter(departamento => departamento.id === localidad[0]?.departamento_id)
     let provincia = provincias.find(provincia => provincia.id === depto[0]?.provincia_id)

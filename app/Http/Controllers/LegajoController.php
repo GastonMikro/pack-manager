@@ -27,6 +27,7 @@ class LegajoController extends Controller
                 ->orWhere('cuil','like','%' . request()->get('search')  . '%');
             })
             ->with('empresa')
+            ->orderBy('numero_legajo','ASC')
             ->get();
         
         return Inertia::render('Legajos/Index',[
@@ -85,7 +86,7 @@ class LegajoController extends Controller
         return redirect()->route('index_legajos',$empresa->id)->with('exito','Legajo Creado!');
     }
 
-    public function update(Empresa $empresa, Legajo $legajo, LegajoRequest $request)/* : RedirectResponse */
+    public function update(Empresa $empresa, Legajo $legajo, LegajoRequest $request)
     {
         $data = $request->validated();
         DB::beginTransaction();

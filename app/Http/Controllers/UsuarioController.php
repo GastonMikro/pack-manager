@@ -25,6 +25,7 @@ class UsuarioController extends Controller
             ->when($request->has('search'),function($query){
                 $query->where('nombre','like','%' . request()->get('search')  . '%');
             })
+            ->orderBy('nombre','ASC')
             ->get();
 
         return Inertia::render('Usuarios/Index',[

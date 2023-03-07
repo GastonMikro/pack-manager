@@ -6,6 +6,7 @@ import FlashMessages from "@/Components/FlashMessages";
 import { usePrevious } from "react-use";
 import pickBy from "lodash/pickBy";
 import Search from "@/Components/Search";
+import Swal from 'sweetalert2';
 
 function Index() {
 
@@ -41,9 +42,23 @@ function Index() {
         } else {setEmpresaSeleccionada(empresaClick)}
     }
 
-    function handleDeshabilitar(){
-        router.post(route("estado_empresa",empresaSeleccionada?.id),[],
+    function handleHabilitacion(){
+        if(empresaSeleccionada.activo =="1"){
+            Swal.fire({
+                title: 'ADVERTENCIA:',
+                text: `Está por deshabilitar la empresa ${empresaSeleccionada.razon_social}. ¿Desea continuar?`,
+                showCancelButton: true,
+                confirmButtonText: 'Continuar',
+                cancelButtonText: 'Cancelar',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    router.post(route("estado_empresa",empresaSeleccionada?.id),[],
+                    {onSuccess: () => setEmpresaSeleccionada("")})
+            }})
+                }else{
+                    router.post(route("estado_empresa",empresaSeleccionada?.id),[],
         {onSuccess: () => setEmpresaSeleccionada("")})
+                }
     }
 
     function handleEditar(){router.get(route("ver_empresa", {id:empresaSeleccionada?.id}));}
@@ -66,9 +81,9 @@ function Index() {
                         {empresaSeleccionada !== "" && (
                                 <button className="btn-claro ml-2" onClick={handleEditar}>Editar</button>)}
                         {empresaSeleccionada !== "" && empresaSeleccionada.activo==1 &&(
-                            <button className="btn-rojo ml-2" onClick={handleDeshabilitar}>Deshabilitar</button>)}
+                            <button className="btn-rojo ml-2" onClick={handleHabilitacion}>Deshabilitar</button>)}
                          {empresaSeleccionada !== "" && empresaSeleccionada.activo==0 &&(
-                            <button className="btn-verde ml-2" onClick={handleDeshabilitar}>Habilitar</button>)}
+                            <button className="btn-verde ml-2" onClick={handleHabilitacion}>Habilitar</button>)}
                     </div>
                     <div className="w-1/3 mr-4">
                         <Search
@@ -83,6 +98,7 @@ function Index() {
                     <table className="table">
                         <thead className="table-header">
                             <tr>
+                                <th></th>
                                 <th>Razón Social</th>
                                 <th>CUIT</th>
                                 <th>Domicilio</th>
@@ -96,6 +112,9 @@ function Index() {
                                     onClick={()=>handleEmpresa(empresa.id)}
                                     key={empresa.id}
                                 >
+                                    <td className='w-16 pl-8'> 
+                                        <img src={empresa.logo_file_path} alt="Logo Empresa" className=""/>
+                                    </td>
                                     <td>{empresa.razon_social}</td>
                                     <td>{empresa.cuit}</td>
                                     <td>{empresa.domicilio?.domicilio}</td>

@@ -49,6 +49,7 @@ export default function Panel({title, children}) {
                                 }),
                             }}
                             options={empresas_input}
+                            className="w-48"
                         />
                     </div>
                     

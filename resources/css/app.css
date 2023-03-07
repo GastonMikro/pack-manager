@@ -1,11 +1,9 @@
 @import  "botones.css";
 @import  "table.css";
 
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 
 @font-face {
     font-family: 'Darker Grotesque';
@@ -470,7 +468,6 @@ section {
     box-shadow: none !important;
 }
 
-   
 .dashboard-card {
     box-shadow: 0px 1px 1px rgb(0 0 0 / 14%), 0px 2px 1px rgb(0 0 0 / 12%), 0px 1px 3px rgb(0 0 0 / 20%);
     border-radius: 4px;

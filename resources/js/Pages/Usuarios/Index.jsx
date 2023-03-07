@@ -6,10 +6,11 @@ import FlashMessages from "@/Components/FlashMessages";
 import { usePrevious } from "react-use";
 import pickBy from "lodash/pickBy";
 import Search from "@/Components/Search";
+import Swal from 'sweetalert2';
 
 function Index() {
-
     const {usuarios, filters, empresa_id} = usePage().props
+
     //Búsqueda
     const [values, setValues] = useState({search: filters.search || "",});
     useEffect(() => {
@@ -40,9 +41,24 @@ function Index() {
         } else {setUsuarioSeleccionado(usuarioClick)}
     }
 
-    function handleDeshabilitar(){
-        router.post(route("estado_usuario",{ empresa:empresa_id, usuario:usuarioSeleccionado?.id }),[],
-        {onSuccess: () => setUsuarioSeleccionado("")})}
+    function handleHabilitacion(){
+        if(usuarioSeleccionado.activo =="1"){
+            Swal.fire({
+                title: 'ADVERTENCIA:',
+                text: `Está por deshabilitar al usuario ${usuarioSeleccionado.nombre}. ¿Desea continuar?`,
+                showCancelButton: true,
+                confirmButtonText: 'Continuar',
+                cancelButtonText: 'Cancelar',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    router.post(route("estado_usuario",{ empresa:empresa_id, usuario:usuarioSeleccionado?.id }),[],
+        {onSuccess: () => setUsuarioSeleccionado("")})
+                    }})
+        }else{
+            router.post(route("estado_usuario",{ empresa:empresa_id, usuario:usuarioSeleccionado?.id }),[],
+        {onSuccess: () => setUsuarioSeleccionado("")})
+        }
+    }
 
     function handleEditar(){router.get(route("ver_usuario", { empresa:empresa_id, usuario:usuarioSeleccionado?.id }))}
 
@@ -54,7 +70,7 @@ function Index() {
                     <h1 className="text-2xl font-bold">Procesos Generales</h1>
                     <h2 className="text-xl mt-2 font-bold">Usuarios</h2>
                 </div>
-                <div className="botonera-dos">
+                <div className="botonera-dos items-center">
                     <div>
                         <Link href={route("nuevo_usuario",empresa_id)}>
                             <button className="btn-nuevo ml-4">Nuevo</button>
@@ -63,9 +79,9 @@ function Index() {
                         {usuarioSeleccionado !== "" && (
                                 <button className="btn-claro ml-2" onClick={handleEditar}>Editar</button>)}
                         {usuarioSeleccionado !== "" && usuarioSeleccionado.activo==1 &&(
-                            <button className="btn-rojo ml-2" onClick={handleDeshabilitar}>Deshabilitar</button>)}
+                            <button className="btn-rojo ml-2" onClick={handleHabilitacion}>Deshabilitar</button>)}
                          {usuarioSeleccionado !== "" && usuarioSeleccionado.activo==0 &&(
-                            <button className="btn-verde ml-2" onClick={handleDeshabilitar}>Habilitar</button>)}
+                            <button className="btn-verde ml-2" onClick={handleHabilitacion}>Habilitar</button>)}
                     </div>
                     <div className="w-1/3 mr-4">
                         <Search

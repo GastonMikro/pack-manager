@@ -31,7 +31,11 @@ class EmpresaController extends Controller
             ->orWhere('cuit','like','%' . request()->get('search')  . '%');
         })
         ->with('domicilio')
-        ->get();
+        ->orderBy('razon_social','ASC')
+        ->get()
+        ->each(function ($empresa) {
+            $empresa->logo_file_path = Storage::url($empresa->logo_file_path);
+        });
 
         return Inertia::render('Empresas/Index',[
             'empresas' => $empresas,
@@ -83,13 +87,12 @@ class EmpresaController extends Controller
 
     public function update(EmpresaRequest $request,Empresa $empresa)
     {
-
         $data = $request->validated();
+    
         $razon_social = $data['data']['razon_social'];
         $cuit = $data['data']['cuit'];
         $domicilio = $data['data']['domicilio'];
         $logo_file_path = $data['data']['logo_file_path'];
-
 
         DB::beginTransaction();
         $domicilio = $this->domicilioService->nuevo($domicilio);

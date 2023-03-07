@@ -7,16 +7,18 @@ import { usePrevious } from "react-use";
 import pickBy from "lodash/pickBy";
 import Search from "@/Components/Search";
 import Select from "react-select";
+import Swal from 'sweetalert2';
 
 function Index() {
-
     const {legajos, filters,empresas,empresa_id} = usePage().props
-
+    
     empresas.map((empresa) => {
         empresa.label = empresa.razon_social
         empresa.value = empresa.id
         return empresa
     })
+
+    let options=[{label:"Todas", value:"Todas"}, ...empresas ]
 
     //Búsqueda
     const [values, setValues] = useState({search: filters.search || "",});
@@ -46,7 +48,7 @@ function Index() {
 
     useEffect(() => {
        empresaSeleccionada !== "" && setlegajosShow(legajos.filter(l=>l.empresa_id===empresaSeleccionada))
-       empresaSeleccionada == "" && setlegajosShow(legajos)
+       (empresaSeleccionada == "" || empresaSeleccionada == "Todas")  && setlegajosShow(legajos)
     }, [empresaSeleccionada]);
 
     useEffect(() => {
@@ -62,10 +64,24 @@ function Index() {
         } else {setLegajoSeleccionado(legajoClick)}
     }
 
-    function handleDeshabilitar(){
-        router.post(route("estado_legajo",{ empresa:empresa_id, legajo:legajoSeleccionado?.id }),[],
-        {onSuccess: () => setLegajoSeleccionado("")})}
-
+    function handleHabilitacion(){
+        if(legajoSeleccionado.activo =="1"){
+            Swal.fire({
+                title: 'ADVERTENCIA:',
+                text: `Está por deshabilitar el legajo ${legajoSeleccionado.nombre}. ¿Desea continuar?`,
+                showCancelButton: true,
+                confirmButtonText: 'Continuar',
+                cancelButtonText: 'Cancelar',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    router.post(route("estado_legajo",{empresa:empresa_id, legajo:legajoSeleccionado?.id }),[],
+                {onSuccess: () => setLegajoSeleccionado("")})}})
+                }else{
+                    router.post(route("estado_legajo",{empresa:empresa_id, legajo:legajoSeleccionado?.id }),[],
+                {onSuccess: () => setLegajoSeleccionado("")})
+                }
+    }
+    
     function handleEditar(){router.get(route("ver_legajo", { empresa:empresa_id, legajo:legajoSeleccionado?.id }));}
 
     return (
@@ -86,9 +102,9 @@ function Index() {
                         {legajoSeleccionado !== "" && (
                                 <button className="btn-claro ml-2" onClick={handleEditar}>Editar</button>)}
                         {legajoSeleccionado !== "" && legajoSeleccionado.activo==1 &&(
-                            <button className="btn-rojo ml-2" onClick={handleDeshabilitar}>Deshabilitar</button>)}
+                            <button className="btn-rojo ml-2" onClick={handleHabilitacion}>Deshabilitar</button>)}
                          {legajoSeleccionado !== "" && legajoSeleccionado.activo==0 &&(
-                            <button className="btn-verde ml-2" onClick={handleDeshabilitar}>Habilitar</button>)}
+                            <button className="btn-verde ml-2" onClick={handleHabilitacion}>Habilitar</button>)}
                     </div>
                     <div className='flex w-3/5 justify-end'>
                         {/* <div className="w-1/3">
@@ -104,7 +120,7 @@ function Index() {
                                         boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
                                     }),
                                 }}
-                                options={empresas}
+                                options={options}
                                 placeholder="Empresa"
                                 value={empresaSeleccionada!=="" ? empresas.find(e=>e.value === empresaSeleccionada) : ""}
                             />

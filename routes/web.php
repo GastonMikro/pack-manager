@@ -16,7 +16,6 @@ Route::middleware('guest')->group(function(){
     Route::post('/login',[GeneralController::class, 'login'])->name('login');
 });
 
-
 Route::GET('/elegir_empresa', [GeneralController::class, 'elegirEmpresa'])->name('elegir_empresa');
 Route::GET('/{empresa}/dashboard', [GeneralController::class, 'dashboard'])->name('dashboard');
 

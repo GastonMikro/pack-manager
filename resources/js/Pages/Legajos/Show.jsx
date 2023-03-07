@@ -7,7 +7,6 @@ import FlashMessages from '@/Components/FlashMessages';
 import Select from "react-select";
 
 function Show() {
-
     let {errors,legajo, empresas, empresa_id}=usePage().props
     empresas=empresas.map(empresa=> {return {value: empresa.id,label: empresa.razon_social}})
 
@@ -48,7 +47,7 @@ function Show() {
     }
 
     return (
-        <>
+    <>
     <FlashMessages/>
     <div className="contenedor">
         <div className="m-4 font-bold">
@@ -60,7 +59,7 @@ function Show() {
         <div className="botonera">
             <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
             <Link href={route("index_legajos",empresa_id) }>
-                <button className="btn-rojo ml-2">Cancelar</button>
+                <button className="btn-rojo ml-2">Volver</button>
             </Link >
         </div>
         <form className="px-8"> 
@@ -91,7 +90,7 @@ function Show() {
             <div className="form-padre">
                 <div className="form-uno">
                     <label className='font-bold'>
-                        CUIL<span className="rojo">*</span>
+                        C.U.I.L.<span className="rojo">*</span>
                     </label>
                     <input
                         name="cuil"

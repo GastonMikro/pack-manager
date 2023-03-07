@@ -21,7 +21,6 @@ export default function Show() {
         return rol
     })
     
-    
     const { data, setData } = useForm({
         nombre: usuario?.nombre|| "",
         email:usuario?.email|| "",
@@ -70,7 +69,7 @@ export default function Show() {
                 <div className="botonera">
                     <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
                     <Link href={route("index_usuarios",empresa_id)}>
-                        <button className="btn-rojo ml-2">Cancelar</button>
+                        <button className="btn-rojo ml-2">Volver</button>
                     </Link>
                 </div>
                 <form className="px-8"> 
