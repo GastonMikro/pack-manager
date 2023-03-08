@@ -31,6 +31,7 @@ class UsuarioRequest extends FormRequest
             $rules = [
                 'nombre' => 'required|string',
                 'email' => 'required|email|unique:users',
+                'cuil' => ['required' , 'size:13', 'unique:users,cuil' , new CustomCuit],
                 'password' => 'required|string',
                 'password_autenticacion' => 'nullable|string',
                 'roles' => 'required|array',
@@ -41,6 +42,7 @@ class UsuarioRequest extends FormRequest
             $rules = [
                 'nombre' => 'required|string',
                 'email' => 'required|email',Rule::unique('users')->ignore($this->usuario->id),
+                'cuil' => ['required' , 'size:13' , Rule::unique('users' , 'cuil')->ignore($this->usuario->id), new CustomCuit],
                 'roles' => 'required|array',
                 'empresas' => 'required|array'
             ];

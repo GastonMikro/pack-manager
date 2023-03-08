@@ -85,7 +85,7 @@ function Index() {
                     </div>
                     <div className="w-1/3 mr-4">
                         <Search
-                            placeholder="Buscar por nombre"
+                            placeholder="Buscar por nombre o C.U.I.L"
                             parentValues={values}
                             handleSearch={handleSearch}
                         />
@@ -97,6 +97,7 @@ function Index() {
                         <thead className="table-header">
                             <tr>
                                 <th>Nombre de Usuario</th>
+                                <th>C.U.I.L</th>
                                 <th>Email</th>
                                 <th>Estado</th>
                             </tr>
@@ -109,6 +110,7 @@ function Index() {
                                     key={usuario.id}
                                 >
                                     <td>{usuario.nombre}</td>
+                                    <td>{usuario.cuil}</td>
                                     <td>{usuario.email}</td>
                                     <td>
                                         {usuario.activo == 1 ? 

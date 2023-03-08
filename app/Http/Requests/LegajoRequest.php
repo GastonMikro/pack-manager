@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\CustomCuit;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -30,21 +29,21 @@ class LegajoRequest extends FormRequest
         if($this->getMethod() === 'POST'){
             $rules = [
                 'nombre' => 'required|string|min:6',
-                'numero_legajo' => 'required|integer',
-                'cuil' => ['required' , 'size:13', 'unique:legajos,cuil' , new CustomCuit],
+                'numero_legajo' => 'required|integer', 
+                /* 'email' => 'required|email|unique:users', */
+                'email_corporativo' => 'nullable|email:rfc',          
                 'fecha_alta' => 'nullable|date',
-                'empresa_id' => 'nullable|integer',
-                'email' => 'email:rfc|unique:legajos',
                 'generar_usuario' => 'boolean',
+                'empresa_id' => 'nullable|integer',            
             ];
         }elseif($this->getMethod() === 'PATCH'){
             $rules = [
                 'nombre' => 'required|string',
                 'numero_legajo' => 'required|integer',
-                'cuil' => ['required' , 'size:13' , Rule::unique('legajos' , 'cuil')->ignore($this->legajo->id), new CustomCuit],
+                'email' => 'required|email',Rule::unique('users')->ignore($this->legajo->usuario_id),
+                'email_corporativo' => 'nullable|email:rfc',
                 'fecha_alta' => 'nullable|date',
                 'empresa_id' => 'nullable|integer',
-                'email' => 'email:rfc',Rule::unique('legajos')->ignore($this->legajo->id),
             ];
         }
         return $rules;

@@ -26,9 +26,32 @@ function Create() {
         email: "",
         password: "",
         password_autenticacion:"",
+        cuil:"",
         roles:[],
         empresas: []
     })
+
+    function handleCuil(e) {
+        if (
+            e.target.value?.length === 11 &&
+            data.cuil.length < e.target.value.length
+        ) {
+            e.target.value = [e.target.value.slice(0, 11), "-"].join("");
+        } else if (
+            e.target.value.length >= 2 &&
+            !e.target.value.includes("-") &&
+            data.cuil.length < e.target.value.length
+        ) {
+            if (!e.target.value.includes("-")) {
+                e.target.value = [
+                    e.target.value.slice(0, 2),
+                    "-",
+                    e.target.value.slice(2),
+                ].join("");
+            }
+        }
+        setData("cuil", e.target.value);
+    }
 
     function submit(e) {
         e.preventDefault();
@@ -91,17 +114,17 @@ function Create() {
                     {errors.password && <ErrorForm content={errors.password}/>}
                 </div>
                 <div className="form-dos">
-                   {/*  <label className='font-bold'>
-                        Contraseña Autenticación
+                    <label className='font-bold'>
+                        CUIL<span className="rojo">*</span>
                     </label>
                     <input
-                        name="password_autenticacion"
-                        type="password"
+                        name="cuil"
+                        type="cuil"
                         className="input"
-                        value={data.password_autenticacion}
-                        onChange={(e) =>setData("password_autenticacion", e.target.value)}
+                        value={data.cuil}
+                        onChange={(e) => handleCuil(e)}
                     />
-                    {errors.password_autenticacion && <ErrorForm content={errors.password_autenticacion}/>} */}
+                    {errors.cuil && <ErrorForm content={errors.cuil}/>}
                 </div>
             </div>
             <div className="form-padre">

@@ -106,7 +106,7 @@ function Index() {
                          {legajoSeleccionado !== "" && legajoSeleccionado.activo==0 &&(
                             <button className="btn-verde ml-2" onClick={handleHabilitacion}>Habilitar</button>)}
                     </div>
-                    <div className='flex w-3/5 justify-end'>
+                  {/*   <div className='flex w-3/5 justify-end'> */}
                         {/* <div className="w-1/3">
                             <Select
                                 name="empresas"
@@ -128,7 +128,7 @@ function Index() {
                         
                         <div className="w-1/3 mx-4">
                             <Search
-                                placeholder="Buscar por nombre , N° o CUIL"
+                                placeholder="Buscar por nombre o N°"
                                 parentValues={values}
                                 handleSearch={handleSearch}
                             />
@@ -141,7 +141,7 @@ function Index() {
                         >
                             <img src="/img/sacarfiltros.svg" className={(empresaSeleccionada==="")?"filter-grey":"filter-blue"}/>
                         </button> */}
-                    </div>
+                   {/*  </div> */}
                 </div>
 
                 <div className="table-container">

@@ -19,7 +19,7 @@ class Legajo extends Model
         'usuario_id',
         'empresa_id',
         'activo',
-        'email',
+        'email_corporativo',
     ];
 
     /**

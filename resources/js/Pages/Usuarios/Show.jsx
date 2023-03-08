@@ -25,6 +25,7 @@ export default function Show() {
         nombre: usuario?.nombre|| "",
         email:usuario?.email|| "",
         password: usuario?.password||"",
+        cuil:usuario?.cuil||"",
         roles:usuario?.roles.map(e=>e.id)||[],
         empresas:usuario?.empresas.map(e=>e.id)||[]
     })
@@ -50,6 +51,28 @@ export default function Show() {
                 e.preventDefault();
                 Inertia.post(route("usuario.restablecerPassword",{company_id: company_id,id: usuario.id}))}}) */
             }
+
+    function handleCuil(e) {
+        if (
+            e.target.value?.length === 11 &&
+            data.cuil.length < e.target.value.length
+        ) {
+            e.target.value = [e.target.value.slice(0, 11), "-"].join("");
+        } else if (
+            e.target.value.length >= 2 &&
+            !e.target.value.includes("-") &&
+            data.cuil.length < e.target.value.length
+        ) {
+            if (!e.target.value.includes("-")) {
+                e.target.value = [
+                    e.target.value.slice(0, 2),
+                    "-",
+                    e.target.value.slice(2),
+                ].join("");
+            }
+        }
+        setData("cuil", e.target.value);
+    }
 
     function submit(e) {
         e.preventDefault();
@@ -111,11 +134,28 @@ export default function Show() {
                             />
                         </div>
                         <div className="form-dos">
-                            <label className='font-bold'>Rol<span className="rojo">*</span></label>
+                            <label className='font-bold'>
+                                CUIL<span className="rojo">*</span>
+                            </label>
+                            <input
+                                name="cuil"
+                                type="cuil"
+                                className="input"
+                                value={data.cuil}
+                                onChange={(e) => handleCuil(e)}
+                            />
+                            {errors.cuil && <ErrorForm content={errors.cuil}/>}
+                        </div>
+                       
+                    </div>
+                    
+                    <div className="form-padre">
+                        <div className="form-uno">
+                            <label className='font-bold'>Empresa<span className="rojo">*</span></label>
                             <Select
-                                defaultValue={rolesusuario}
-                                name="roles"
-                                onChange={(option) => setData('roles',option.map(o=>o.value))}
+                                defaultValue={empresas_usuario}
+                                name="empresas"
+                                onChange={(option) => setData('empresas',option.map(o=>o.value))}
                                 isMulti
                                 className="py-2"
                                 styles={{
@@ -126,30 +166,30 @@ export default function Show() {
                                         boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
                                     }),
                                 }}
-                                options={roles}
+                                options={empresas}
                             />
-                            {errors.roles && <ErrorForm content={errors.roles}/>}
+                            {errors.empresas &&<ErrorForm content={errors.empresas}/>}
                         </div>
-                    </div>
-                    <div className="form-uno pr-16">
-                        <label className='font-bold'>Empresa<span className="rojo">*</span></label>
-                        <Select
-                            defaultValue={empresas_usuario}
-                            name="empresas"
-                            onChange={(option) => setData('empresas',option.map(o=>o.value))}
-                            isMulti
-                            className="py-2"
-                            styles={{
-                                control: (base) => ({
-                                    ...base,
-                                    '&:hover': { borderColor: '#b03407' },
-                                    border: '1px solid lightgray', 
-                                    boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
-                                }),
-                            }}
-                            options={empresas}
-                        />
-                        {errors.empresas &&<ErrorForm content={errors.empresas}/>}
+                        <div className="form-dos">
+                                <label className='font-bold'>Rol<span className="rojo">*</span></label>
+                                <Select
+                                    defaultValue={rolesusuario}
+                                    name="roles"
+                                    onChange={(option) => setData('roles',option.map(o=>o.value))}
+                                    isMulti
+                                    className="py-2"
+                                    styles={{
+                                        control: (base) => ({
+                                            ...base,
+                                            '&:hover': { borderColor: '#b03407' },
+                                            border: '1px solid lightgray', 
+                                            boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
+                                        }),
+                                    }}
+                                    options={roles}
+                                />
+                                {errors.roles && <ErrorForm content={errors.roles}/>}
+                        </div>
                     </div>
                 </form>
             </div>

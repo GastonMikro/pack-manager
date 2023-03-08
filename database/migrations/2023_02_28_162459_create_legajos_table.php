@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('legajos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('email');
+            $table->string('email_corporativo');
             $table->integer('numero_legajo');
-            $table->string('cuil')->nullable()->unique();
             $table->dateTime('fecha_alta');
             $table->foreignId('usuario_id')->nullable()->constrained('users');
             $table->foreignId('empresa_id')->nullable()->constrained('empresas');

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre',100);
             $table->string('email')->unique();
+            $table->string('cuil')->nullable()->unique();
             $table->string('password');
             $table->string('password_autenticacion')->default(null);
             $table->boolean('activo')->default(true);

@@ -23,7 +23,8 @@ class UsuarioController extends Controller
             $query->where('empresa_id', $empresa->id);
         })
             ->when($request->has('search'),function($query){
-                $query->where('nombre','like','%' . request()->get('search')  . '%');
+                $query->where('nombre','like','%' . request()->get('search')  . '%')
+                ->orWhere('cuil','like','%' . request()->get('search')  . '%');
             })
             ->orderBy('nombre','ASC')
             ->get();
@@ -65,6 +66,7 @@ class UsuarioController extends Controller
         $usuario->update([
             'nombre' => $data['nombre'],
             'email' => $data['email'],
+            'cuil' => $data['cuil'],
             'roles' => $data['roles'],
             'empresas' => $data['empresas'],
         ]);
@@ -79,12 +81,15 @@ class UsuarioController extends Controller
 
     public function store(Empresa $empresa , UsuarioRequest $request): RedirectResponse
     {
+           /*  dd($request); */
+
         $empresa_id=$empresa->id;
         $data = $request->validated();
         DB::beginTransaction();
         $usuario = Usuario::create([
             'nombre' => $data['nombre'],
             'email' => $data['email'],
+            'cuil' => $data['cuil'],
             'password' => Hash::make($data['password']),
             'password_autenticacion' => $data['password_autenticacion'],
         ]);

@@ -19,6 +19,7 @@ class Usuario extends Model
         'email_verified_at',
         'password',
         'password_autenticacion',
+        'cuil',
         'activo',
         'ultimo_acceso',
     ];

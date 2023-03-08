@@ -13,10 +13,9 @@ function Show() {
     const { data, setData } = useForm({
         nombre: legajo.nombre ||"",
         numero_legajo: legajo.numero_legajo||"",
-        cuil: legajo.cuil ||"",
         fecha_alta:legajo.fecha_alta.split(" ")[0]||"",
         empresa_id: legajo.empresa_id||"",
-        email: legajo.email||"",
+        email_corporativo: legajo.email_corporativo||"",
     })
 
     function handleCuil(e) {
@@ -45,7 +44,6 @@ function Show() {
         e.preventDefault();
         router.patch(route('editar_legajo', {empresa: empresa_id, legajo:legajo}), data)
     }
-
     return (
     <>
     <FlashMessages/>
@@ -76,7 +74,7 @@ function Show() {
                      {errors.nombre && <ErrorForm content={errors.nombre}/>}
                 </div>
                 <div className="form-dos">
-                    <label className='font-bold'>N°<span className="rojo">*</span></label>
+                    <label className='font-bold'>N° de Legajo<span className="rojo">*</span></label>
                     <input
                         name="numero_legajo"
                         type="text"
@@ -87,7 +85,7 @@ function Show() {
                     {errors.numero_legajo && <ErrorForm content={errors.numero_legajo}/>}
                 </div>
             </div>
-            <div className="form-padre">
+            {/* <div className="form-padre">
                 <div className="form-uno">
                     <label className='font-bold'>
                         C.U.I.L.<span className="rojo">*</span>
@@ -98,6 +96,7 @@ function Show() {
                         className="input"
                         value={data.cuil}
                         onChange={(e) => handleCuil(e)}
+                        disabled
                     />
                     {errors.cuil && <ErrorForm content={errors.cuil}/>}
                 </div>
@@ -112,9 +111,34 @@ function Show() {
                     />
                     {errors.email && <ErrorForm content={errors.email}/>}
                 </div>
-            </div>
+            </div> */}
             <div className="form-padre">
                 <div className="form-uno">
+                    <label className='font-bold'>
+                        Fecha de Alta
+                    </label>
+                    <input
+                        name="fecha_alta"
+                        type="date"
+                        className="input"
+                        value={data.fecha_alta}
+                        onChange={(e) =>setData("fecha_alta", e.target.value)}
+                    />
+                    {errors.fecha_alta && <ErrorForm content={errors.fecha_alta}/>}
+                </div>
+                <div className="form-dos">
+                    <label className='font-bold'>Email Corporativo</label>
+                    <input
+                        name="email_corporativo"
+                        type="email"
+                        className="input"
+                        onChange={(e) => setData("email_corporativo", e.target.value)}
+                        value={data.email_corporativo}
+                    />
+                    {errors.email_corporativo && <ErrorForm content={errors.email_corporativo}/>}
+                </div>
+            </div>
+                <div className="form-uno pr-16">
                     <label className='font-bold'>Empresa<span className="rojo">*</span></label>
                     <Select
                         defaultValue={empresas.find((co) => co.value === data.empresa_id)}
@@ -134,20 +158,6 @@ function Show() {
                     />
                     {errors.empresa && <ErrorForm content={errors.empresa}/>}
                 </div>
-                <div className="form-dos">
-                    <label className='font-bold'>
-                        Fecha de Alta
-                    </label>
-                    <input
-                        name="fecha_alta"
-                        type="date"
-                        className="input"
-                        value={data.fecha_alta}
-                        onChange={(e) =>setData("fecha_alta", e.target.value)}
-                    />
-                    {errors.fecha_alta && <ErrorForm content={errors.fecha_alta}/>}
-                </div>
-            </div>
         </form>
     </div>
     </>
