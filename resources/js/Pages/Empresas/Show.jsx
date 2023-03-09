@@ -5,12 +5,25 @@ import Panel from '@/Layouts/Panel';
 import Select from "react-select";
 import ErrorForm from '@/Components/ErrorForm';
 import FlashMessages from '@/Components/FlashMessages';
+import Breadcrumb from '@/Components/Breadcrumb';
 
 function Show() {
-
     let {errors, provincias, localidades, departamentos, empresa}=usePage().props
 
-    console.log(errors)
+    const crumbs = [
+        {
+            crumb: "Administrador",
+            href: "",
+        },
+        {
+            crumb: "Empresas",
+            href: route('index_empresas'),
+        },
+        {
+            crumb: empresa.razon_social,
+            href: "",
+        },
+    ];
 
     const { data, setData } = useForm({
         razon_social: empresa.razon_social ||"",
@@ -107,23 +120,17 @@ function Show() {
     }
 
     return (
-        <>
-    <FlashMessages/>
-    <div className="contenedor">
-        <div className="m-4 font-bold">
-            <h1 className="text-2xl">Procesos Generales</h1>
-            <h2 className="text-xl mt-2">Empresa</h2>
-        </div>
-       <h3 className="titulo">Editar</h3>
-
-        <div className="botonera">
+    <>
+        <FlashMessages/>
+        <Breadcrumb crumbs={crumbs}/>
+        <div className="botonera justify-end">
             <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
             <Link href={route("index_empresas") }>
                 <button className="btn-rojo ml-2">Volver</button>
             </Link >
         </div>
 
-        <div className="w-10/12 mt-4 mx-auto flex flex-col justify-center items-center h-3/4 pr-4 max-h-full">
+        <div className="w-10/12 mt-4 mx-auto flex flex-col justify-center items-center pr-4">
             <img src={avatar} alt="Logo Empresa" className="w-1/4 mb-4"/>
             <div>
                 <input
@@ -133,26 +140,16 @@ function Show() {
                     id="logo"
                 />
                     <label htmlFor="logo" className="cursor-pointer">
-                        <img src="/img/Cambiar.png" alt="Cambiar Logo"/>
+                        <img src="/img/Cambiar.png" alt="Cambiar Logo" className='h-8'/>
                     </label>
                 {errors.logo_file_path && <ErrorForm content={errors.logo_file_path}/>}
             </div>
         </div>
 
-        <form className="px-8"> 
+        <form className="px-4"> 
+            <h3 className="flex justify-start ml-8 font-bold mb-2">Datos Principales</h3>
             <div className="form-padre">
                 <div className="form-uno">
-                    <label className="font-bold">Razón Social<span className="rojo">*</span></label>
-                    <input
-                        name="razon_social"
-                        type="text"
-                        className="input"
-                        onChange={(e) => setData("razon_social", e.target.value)}
-                        value={data.razon_social}
-                    />
-                     {errors['data.razon_social'] && <ErrorForm content={errors['data.razon_social']}/>}
-                </div>
-                <div className="form-dos">
                     <label className="font-bold">Cuit<span className="rojo">*</span></label>
                     <input
                         name="cuit"
@@ -163,9 +160,21 @@ function Show() {
                     />
                     {errors['data.cuit'] && <ErrorForm content={errors['data.cuit']}/>}
                 </div>
+                <div className="form-dos">
+                    <label className="font-bold">Razón Social<span className="rojo">*</span></label>
+                    <input
+                        name="razon_social"
+                        type="text"
+                        className="input"
+                        onChange={(e) => setData("razon_social", e.target.value)}
+                        value={data.razon_social}
+                    />
+                    {errors['data.razon_social'] && <ErrorForm content={errors['data.razon_social']}/>}
+                </div>
             </div>
-            <div className="form-padre px-8 my-4 border-t-2">
-                <div className="w-full pt-4">
+            <h3 className="flex justify-start ml-8 font-bold my-2 border-t-2 pt-4">Datos de Contacto</h3>
+            <div className="form-padre px-8">
+                <div className="w-full">
                     <div className="flex">
                         <div className="w-1/3">
                             <label className="font-bold">
@@ -176,7 +185,15 @@ function Show() {
                                 name="provincia"
                                 options={provinciasFiltradas}
                                 onChange={(option) => handleDepartamentos(option)}
-                                className="my-2"
+                                className="py-2"
+                                styles={{
+                                    control: (base) => ({
+                                        ...base,
+                                        '&:hover': { borderColor: '#b03407' },
+                                        border: '1px solid lightgray', 
+                                        boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
+                                    }),
+                                }}
                                 defaultValue={provincia|| ""}
                             />
                         </div>
@@ -189,7 +206,15 @@ function Show() {
                                 name="departamento"
                                 options={departamentosFiltrados}
                                 onChange={(option) => handleLocalidades(option)}
-                                className="my-2"
+                                className="py-2"
+                                styles={{
+                                    control: (base) => ({
+                                        ...base,
+                                        '&:hover': { borderColor: '#b03407' },
+                                        border: '1px solid lightgray', 
+                                        boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
+                                    }),
+                                }}
                                 defaultValue={depto||""}
                             />
                         </div>
@@ -209,7 +234,15 @@ function Show() {
                                     }))
                                     errors["domicilio.localidad_id"]=""
                                 }}
-                                className=" my-2"
+                                className="py-2"
+                                styles={{
+                                    control: (base) => ({
+                                        ...base,
+                                        '&:hover': { borderColor: '#b03407' },
+                                        border: '1px solid lightgray', 
+                                        boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
+                                    }),
+                                }}
                                 defaultValue={localidad[0] || ""}
                             />
                             {errors["domicilio.localidad_id"] && <ErrorForm content={errors["domicilio.localidad_id"]}/>}
@@ -236,7 +269,6 @@ function Show() {
                 </div>
             </div>
         </form>
-    </div>
     </>
     );
 }

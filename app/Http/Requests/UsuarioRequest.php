@@ -35,7 +35,8 @@ class UsuarioRequest extends FormRequest
                 'password' => 'required|string',
                 'password_autenticacion' => 'nullable|string',
                 'roles' => 'required|array',
-                'empresas' => 'required|array'
+                'empresas' => 'array',
+                'empresa_id' => 'nullable|integer',  
             ];
             
         }elseif($this->getMethod() === 'PATCH'){
@@ -44,7 +45,8 @@ class UsuarioRequest extends FormRequest
                 'email' => 'required|email',Rule::unique('users')->ignore($this->usuario->id),
                 'cuil' => ['required' , 'size:13' , Rule::unique('users' , 'cuil')->ignore($this->usuario->id), new CustomCuit],
                 'roles' => 'required|array',
-                'empresas' => 'required|array'
+                'empresas' => 'required|array',
+                'empresa_id' => 'nullable|integer',
             ];
         }
         return $rules;

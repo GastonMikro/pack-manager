@@ -6,10 +6,26 @@ import ErrorForm from '@/Components/ErrorForm';
 import FlashMessages from '@/Components/FlashMessages';
 import Select from "react-select";
 import BuscarUsuario from '@/Components/BuscarUsuario';
+import Breadcrumb from '@/Components/Breadcrumb';
 
 function Create() {
-
     const {errors, empresas,empresa_id}=usePage().props
+    const empresa=empresas.find(empresa=>empresa.id === empresa_id).razon_social
+
+    const crumbs = [
+        {
+            crumb: empresa,
+            href: "",
+        },
+        {
+            crumb: "Legajos",
+            href: route('index_legajos',empresa_id),
+        },
+        {
+            crumb: "Alta",
+            href: "",
+        },
+    ];
 
     empresas.map((empresa) => {
         empresa.label = empresa.razon_social
@@ -19,25 +35,6 @@ function Create() {
 
     const [asociar, setAsociar] = useState(false);
     const [usuarioSeleccionado, setUsuarioSeleccionado] = useState("");
-
-    useEffect(() => {
-     if(usuarioSeleccionado !=="")
-     setData((prev) => ({
-        ...prev,
-        nombre: usuarioSeleccionado.nombre,
-        email: usuarioSeleccionado.email,
-        cuil:usuarioSeleccionado.cuil
-    }))
-    else{
-        setData((prev) => ({
-            ...prev,
-            nombre: "",
-            email: "",
-            cuil:""
-        }))
-    }
-
-    }, [usuarioSeleccionado]);
 
     const { data, setData } = useForm({
         nombre: "",
@@ -49,7 +46,35 @@ function Create() {
         generar_usuario: true,
     })
 
-    console.log(data)
+    useEffect(() => {
+        if(usuarioSeleccionado !== "")
+        setData((prev) => ({
+           ...prev,
+           nombre: usuarioSeleccionado.nombre,
+           email: usuarioSeleccionado.email,
+           cuil:usuarioSeleccionado.cuil
+       }))
+       else{
+           setData((prev) => ({
+               ...prev,
+               nombre: "",
+               email: "",
+               cuil:""
+           }))
+       }
+       }, [usuarioSeleccionado]);
+
+    useEffect(() => {
+        if(!asociar)
+        setData((prev) => ({
+            ...prev,
+               nombre: "",
+               email: "",
+               cuil:"",
+               generar_usuario:true
+       }))
+       ;setUsuarioSeleccionado("")
+       }, [asociar])
 
     function handleCuil(e) {
         if (
@@ -77,14 +102,19 @@ function Create() {
         if (e.target.checked) 
         {setData("generar_usuario", true); setAsociar(false); setUsuarioSeleccionado("")} 
         else {
-            setData("generar_usuario", false)
-        }}
+            setData("generar_usuario", false) ; setAsociar(true)
+        }
+    }
 
     function handleAsociar(e) {
         if (e.target.checked) 
         {setData("generar_usuario", false); setAsociar(true)} 
         else {setAsociar(false)}
     }
+
+   function handleCancelar(){
+    setData("generar_usuario", true); setAsociar(false)
+   }
 
     function submit(e) {
         e.preventDefault();
@@ -93,15 +123,17 @@ function Create() {
 
     return (
     <>
+        {(asociar && usuarioSeleccionado  === "") && 
+        <BuscarUsuario 
+            setUsuarioSeleccionado={setUsuarioSeleccionado} 
+            handleClick={handleCancelar} 
+            empresa_id={empresa_id}
+            setAsociar={setAsociar}
+        />}
     <FlashMessages/>
+    <Breadcrumb crumbs={crumbs}/>
     <div className="contenedor">
-        <div className="m-4 font-bold">
-            <h1 className="text-2xl">Procesos Generales</h1>
-            <h2 className="text-xl mt-2">Legajo</h2>
-        </div>
-        <h3 className="titulo">Nuevo</h3>
-
-        <div className='pl-16 mb-8'>
+        <div className='pl-16 mt-4'>
             <div className='flex justify-between w-1/4'>
                 <label className="switch">
                     <input 
@@ -111,9 +143,9 @@ function Create() {
                         />
                     <span className="slider"></span>
                 </label>
-                <span className="ml-3 font-bold text-gray-900">Generar Usuario </span>
+                <span className="ml-3 font-bold text-gray-900">Generar Usuario</span>
                 <p className="mx-4" 
-                    data-title='Si selecciona la opción "Generar Usuario" el legajo se creará junto con un usuario con el email y el CUIL provistos y una contraseña que se enviará via mail.'
+                    data-title='Si selecciona la opción "Generar Usuario" el legajo se creará junto con un usuario con el email y el C.U.I.L. provistos y una contraseña que se enviará via mail.'
                 >
                     <img src="/img/Ayuda.svg"alt="Ayuda"/>
                 </p>
@@ -123,37 +155,28 @@ function Create() {
                 <label className="switch">
                     <input 
                         type="checkbox"
-                        checked={asociar || usuarioSeleccionado !==""}
+                        checked={asociar /* || usuarioSeleccionado !=="" */}
                         onChange={handleAsociar}
                         />
                     <span className="slider"></span>
                 </label>
                 <span className="ml-3 font-bold text-gray-900">Asociar a un Usuario</span>
-                    <p 
-                        className="mx-4" 
-                        data-title='Si selecciona la opción "Asociar a un Usuario" el legajo se creará a partir de un usuario ya existente con sus respectivos email y CUIL.'
+                    <p className="mx-4" 
+                        data-title='Si selecciona la opción "Asociar a un Usuario" el legajo se creará a partir de un usuario ya existente con sus respectivos email y C.U.I.L.'
                     >
-                        <img src="/img/Ayuda.svg"alt="Ayuda"/>
+                        <img src="/img/Ayuda.svg" alt="Ayuda"/>
                     </p>
             </div>
         </div>
 
-        {asociar && 
-        <BuscarUsuario 
-            setUsuarioSeleccionado={setUsuarioSeleccionado} 
-            handleClick={handleAsociar} 
-            empresa_id={empresa_id}
-            setAsociar={setAsociar}
-        />}
-
-            <div className="botonera">
-                <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
+            <div className="botonera justify-end">
+                <button className="btn-verde" onClick={submit}>Aceptar</button>
                 <Link href={route("index_legajos",empresa_id) }>
-                    <button className="btn-rojo ml-2">Cancelar</button>
+                    <button className="btn-rojo ml-2 mr-4">Cancelar</button>
                 </Link>
             </div>
 
-            <form className="px-8"> 
+            <form className="px-4"> 
                 <div className="form-padre">
                     <div className="form-uno">
                         <label className='font-bold'>Nombre<span className="rojo">*</span></label>

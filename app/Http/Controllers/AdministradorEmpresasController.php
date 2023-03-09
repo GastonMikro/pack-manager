@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-class EmpresaController extends Controller
+class AdministradorEmpresasController extends Controller
 {
     protected DomicilioService $domicilioService;
 

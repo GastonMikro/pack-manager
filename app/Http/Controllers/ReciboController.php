@@ -16,7 +16,8 @@ class ReciboController extends Controller
     {
         return Inertia::render('Recibos/Index',[
             'recibos' =>Recibo::all(),
-            'empresa_id' => $empresa->id
+            'empresa_id' => $empresa->id,
+            'empresa_razon_social' => $empresa->razon_social,
         ]);
     }
 
@@ -24,7 +25,8 @@ class ReciboController extends Controller
     {
         return Inertia::render('Recibos/Importar',[
              'recibos' =>Recibo::all(),
-             'empresa_id' => $empresa->id
+             'empresa_id' => $empresa->id,
+             'empresa_razon_social' => $empresa->razon_social,
         ]);
     }
 
@@ -32,7 +34,8 @@ class ReciboController extends Controller
     {
         return Inertia::render('Recibos/Autorizar',[
              'recibos' =>Recibo::all(),
-             'empresa_id' => $empresa->id
+             'empresa_id' => $empresa->id,
+             'empresa_razon_social' => $empresa->razon_social,
         ]);
     }
 
@@ -40,7 +43,8 @@ class ReciboController extends Controller
     {
         return Inertia::render('Recibos/Autenticacion',[
              'recibos' =>Recibo::all(),
-             'empresa_id' => $empresa->id
+             'empresa_id' => $empresa->id,
+             'empresa_razon_social' => $empresa->razon_social,
         ]);
     }
 

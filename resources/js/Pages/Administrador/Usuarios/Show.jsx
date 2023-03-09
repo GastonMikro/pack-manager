@@ -10,15 +10,15 @@ import Breadcrumb from "@/Components/Breadcrumb";
 
 
 export default function Show() {
-    const { errors, empresas, roles, usuario,empresa_id,empresa_razon_social} = usePage().props
+    const { errors, empresas, roles, usuario} = usePage().props
     const crumbs = [
         {
-            crumb: empresa_razon_social,
+            crumb: "Administrador",
             href: "",
         },
         {
             crumb: "Usuarios",
-            href: route('index_usuarios',empresa_id),
+            href: route('admin_index_usuarios'),
         },
         {
             crumb: usuario.nombre,
@@ -89,13 +89,10 @@ export default function Show() {
         setData("cuil", e.target.value);
     }
 
-    function verLegajo(empresa, legajo){
-        router.get(route("ver_legajo", {empresa:empresa, legajo:legajo}))
-    }
 
     function submit(e) {
         e.preventDefault();
-        router.patch(route("editar_usuario", {empresa: empresa_id, usuario:usuario}),data)
+        router.patch(route("editar_usuario_admin", usuario),data)
     }
 
     return (
@@ -104,7 +101,7 @@ export default function Show() {
         <Breadcrumb crumbs={crumbs}/>
             <div className="botonera justify-end">
                 <button className="btn-verde" onClick={submit}>Aceptar</button>
-                <Link href={route("index_usuarios",empresa_id)}>
+                <Link href={route("admin_index_usuarios")}>
                     <button className="btn-rojo ml-2 mr-4">Volver</button>
                 </Link>
             </div>
@@ -204,24 +201,7 @@ export default function Show() {
                     </div>
                 </div>
             </form>
-           {usuario.legajos.length > 0?  
-            <div className="px-12 mt-4 font-bold ">
-                <label>Legajos Asociados</label>
-                <div className="flex bg-white rounded mt-2 px-4">
-                    <p className="p-2 w-1/4 text-center">Nombre</p>
-                    <p className="p-2 w-1/4 text-center">Empresa</p>
-                    <p className="p-2 w-1/4 text-center">Email Corporativo</p>
-                    <p className="p-2 w-1/4 hover:underline text-center"></p>
-                </div>
-                {usuario.legajos.map(legajo=>
-                <div className="flex bg-white rounded mt-2 px-4">
-                    <p className="p-2 w-1/4 text-center">{legajo.nombre}</p>
-                    <p className="p-2 w-1/4 text-center">{empresas.find(empresa=>empresa.id===legajo.empresa_id).razon_social}</p>
-                    <p className="p-2 w-1/4 text-center">{legajo.email_corporativo ? legajo.email_corporativo : "-" }</p>
-                    <p className="p-2 w-1/4 hover:underline text-center" onClick={()=>verLegajo(legajo.empresa_id, legajo.id )}>Ver</p>
-                </div>
-                )}             
-            </div> :""} 
+ 
         </>
     );
 }

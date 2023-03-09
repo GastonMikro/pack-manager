@@ -57,7 +57,7 @@ function BuscarUsuario({setUsuarioSeleccionado,handleClick}) {
                             <tbody>
                             {usuarios?.map(usuario =>
                                 <tr
-                                    onDoubleClick={(e)=>{setUsuarioSeleccionado(usuario), handleClick(e)}}
+                                    onDoubleClick={(e)=>{setUsuarioSeleccionado(usuario)}}
                                     className="table-row"
                                     key={usuario.id}
                                 >

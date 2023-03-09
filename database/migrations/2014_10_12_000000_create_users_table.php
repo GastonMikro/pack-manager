@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('cuil')->nullable()->unique();
             $table->string('password');
-            $table->string('password_autenticacion')->default(null);
+            $table->string('password_autenticacion')->nullable();
             $table->boolean('activo')->default(true);
             $table->dateTime('ultimo_acceso')->nullable();
             

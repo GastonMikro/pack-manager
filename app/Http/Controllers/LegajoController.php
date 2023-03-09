@@ -60,6 +60,7 @@ class LegajoController extends Controller
     public function show(Empresa $empresa,Legajo $legajo): Response
     {
         $legajo->empresa = $legajo->empresa()->get();
+        $legajo->usuario = $legajo->usuario()->get();
         return Inertia::render('Legajos/Show',[
             'legajo' => $legajo,
             'empresas' =>Empresa::all(),

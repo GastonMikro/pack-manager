@@ -5,16 +5,36 @@ import Panel from '@/Layouts/Panel';
 import Select from "react-select";
 import ErrorForm from '@/Components/ErrorForm';
 import FlashMessages from '@/Components/FlashMessages';
+import Breadcrumb from '@/Components/Breadcrumb';
 
 function Create() {
 
     let {errors, provincias, localidades, departamentos}=usePage().props
+
+    const crumbs = [
+        {
+            crumb: "Administrador",
+            href: "",
+        },
+        {
+            crumb: "Empresas",
+            href: route('index_empresas'),
+        },
+        {
+            crumb: "Alta",
+            href: "",
+        },
+    ];
 
     const { data, setData } = useForm({
         razon_social: "",
         cuit: "",
         domicilio: {},
         logo_file_path:null,
+        url_api: "",
+        db_api: "",
+        usuario_api: "",
+        password_api: "",
     })
 
     function handleCuit(e) {
@@ -84,6 +104,17 @@ function Create() {
     let depto = departamentos.filter(departamento => departamento.id === localidad[0]?.departamento_id)
     let provincia = provincias.find(provincia => provincia.id === depto[0]?.provincia_id)
 
+    const [avatar, setAvatar] = useState(!data.logo_file_path ? '/img/LogoPackManager.png' : data.logo_file_path)
+    const [archivoElegido, setArchivoElegido] = useState()
+    useEffect(() => {
+        if (archivoElegido) {
+            const objectUrl = URL.createObjectURL(archivoElegido)
+            setAvatar(objectUrl)
+            setData('logo_file_path',archivoElegido)
+            return () => URL.revokeObjectURL(objectUrl)
+        }
+    },[archivoElegido])
+
     function submit(e) {
         e.preventDefault();
         router.post(route('alta_empresa'), data,{
@@ -92,35 +123,35 @@ function Create() {
     }
 
     return (
-        <>
-    <FlashMessages/>
-    <div className="contenedor">
-        <div className="m-4 font-bold">
-            <h1 className="text-2xl">Procesos Generales</h1>
-            <h2 className="text-xl mt-2">Empresa</h2>
-        </div>
-       <h3 className="titulo">Nueva</h3>
-
-        <div className="botonera">
-            <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
+    <>
+        <FlashMessages/>
+        <Breadcrumb crumbs={crumbs}/>
+        <div className="botonera justify-end">
+            <button className="btn-verde" onClick={submit}>Aceptar</button>
             <Link href={route("index_empresas") }>
-                <button className="btn-rojo ml-2">Cancelar</button>
+                <button className="btn-rojo ml-2 mr-4">Cancelar</button>
             </Link >
         </div>
-        <form className="px-8"> 
+        <form className="px-4"> 
+            <h3 className="flex justify-start ml-8 font-bold mb-2">Logo</h3>
+            <div className="w-10/12 mt-4 mx-auto flex flex-col justify-center items-center pr-4">
+                <img src={avatar} alt="Logo Empresa" className="w-1/4 mb-4"/>
+                <div>
+                    <input
+                        type="file"
+                        onChange={(e) => {setArchivoElegido(e.target.files[0])}}
+                        hidden
+                        id="logo"
+                    />
+                        <label htmlFor="logo" className="cursor-pointer">
+                            <img src="/img/Cambiar.png" alt="Cambiar Logo" className='h-8'/>
+                        </label>
+                    {errors.logo_file_path && <ErrorForm content={errors.logo_file_path}/>}
+                </div>
+            </div>
+            <h3 className="flex justify-start ml-8 font-bold my-2 border-t-2 pt-4">Datos Principales</h3>
             <div className="form-padre">
                 <div className="form-uno">
-                    <label className="font-bold">Razón Social<span className="rojo">*</span></label>
-                    <input
-                        name="razon_social"
-                        type="text"
-                        className="input"
-                        onChange={(e) => setData("razon_social", e.target.value)}
-                        value={data.razon_social}
-                    />
-                     {errors.razon_social && <ErrorForm content={errors.razon_social}/>}
-                </div>
-                <div className="form-dos">
                     <label className="font-bold">Cuit<span className="rojo">*</span></label>
                     <input
                         name="cuit"
@@ -131,20 +162,21 @@ function Create() {
                     />
                     {errors.cuit && <ErrorForm content={errors.cuit}/>}
                 </div>
+                <div className="form-dos">
+                    <label className="font-bold">Razón Social<span className="rojo">*</span></label>
+                    <input
+                        name="razon_social"
+                        type="text"
+                        className="input"
+                        onChange={(e) => setData("razon_social", e.target.value)}
+                        value={data.razon_social}
+                    />
+                    {errors.razon_social && <ErrorForm content={errors.razon_social}/>}
+                </div>
             </div>
-            <div className="form-uno pr-16">
-                <label className="font-bold">Logo</label>
-                <input
-                    className="h-9 rounded shadow-gray-400 my-2 block w-full text-lg text-gray-900 bg-white border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-100 dark:placeholder-gray-100"
-                    type="file"
-                    name="logo_file_path"
-                    accept="image/*"
-                    onChange={(e)=>setData("logo_file_path", e.target.files[0])}       
-                />
-                {errors.logo_file_path && <ErrorForm content={errors.logo_file_path}/>}
-            </div>
-            <div className="form-padre px-8 my-4 border-t-2">
-                <div className="w-full pt-4">
+            <h3 className="flex justify-start ml-8 font-bold my-2 border-t-2 pt-4">Datos de Contacto</h3>
+            <div className="form-padre px-8">
+                <div className="w-full">
                     <div className="flex">
                         <div className="w-1/3">
                             <label className="font-bold">
@@ -155,9 +187,18 @@ function Create() {
                                 name="provincia"
                                 options={provinciasFiltradas}
                                 onChange={(option) => handleDepartamentos(option)}
-                                className="my-2"
+                                className="py-2"
+                                styles={{
+                                    control: (base) => ({
+                                        ...base,
+                                        '&:hover': { borderColor: '#b03407' },
+                                        border: '1px solid lightgray', 
+                                        boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
+                                    }),
+                                }}
                                 defaultValue={provincia|| ""}
                             />
+                            
                         </div>
                         <div className="w-1/3 mx-8">
                             <label className="font-bold">
@@ -168,7 +209,15 @@ function Create() {
                                 name="departamento"
                                 options={departamentosFiltrados}
                                 onChange={(option) => handleLocalidades(option)}
-                                className="my-2"
+                                className="py-2"
+                                styles={{
+                                    control: (base) => ({
+                                        ...base,
+                                        '&:hover': { borderColor: '#b03407' },
+                                        border: '1px solid lightgray', 
+                                        boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
+                                    }),
+                                }}
                                 defaultValue={depto||""}
                             />
                         </div>
@@ -187,7 +236,15 @@ function Create() {
                                         localidad_id: option.value,
                                     }))
                                 }}
-                                className=" my-2"
+                                className="py-2"
+                                styles={{
+                                    control: (base) => ({
+                                        ...base,
+                                        '&:hover': { borderColor: '#b03407' },
+                                        border: '1px solid lightgray', 
+                                        boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
+                                    }),
+                                    }}
                                 defaultValue={localidades.find(localidad => localidad.value === data?.domicilio.localidad_id || "")}
                             />
                             {errors["domicilio.localidad_id"] && <ErrorForm content={errors["domicilio.localidad_id"]}/>}
@@ -212,8 +269,57 @@ function Create() {
                     </div>
                 </div>
             </div>
+
+            <h3 className="flex justify-start ml-8 font-bold my-2 border-t-2 pt-4">Configuración</h3>
+            <div className="form-padre">
+                <div className="form-uno">
+                    <label className="font-bold">URL<span className="rojo">*</span></label>
+                    <input
+                        name="url_api"
+                        type="text"
+                        className="input"
+                        onChange={(e) => setData("url_api", e.target.value)}
+                        value={data.url_api}
+                    />
+                    {errors.url_api && <ErrorForm content={errors.url_api}/>}
+                </div>
+                <div className="form-dos">
+                    <label className="font-bold">Base de Datos<span className="rojo">*</span></label>
+                    <input
+                        name="db_api"
+                        type="text"
+                        className="input"
+                        onChange={(e) => setData("db_api", e.target.value)}
+                        value={data.db_api}
+                    />
+                    {errors.db_api && <ErrorForm content={errors.db_api}/>}
+                </div>
+            </div>
+            <div className="form-padre mb-2">
+                <div className="form-uno">
+                    <label className="font-bold">Usuario<span className="rojo">*</span></label>
+                    <input
+                        name="usuario_api"
+                        type="text"
+                        className="input"
+                        onChange={(e) => setData("usuario_api", e.target.value)}
+                        value={data.usuario_api}
+                    />
+                    {errors.usuario_api && <ErrorForm content={errors.usuario_api}/>}
+                </div>
+                <div className="form-dos">
+                    <label className="font-bold">Contraseña<span className="rojo">*</span></label>
+                    <input
+                        name="password_api"
+                        type="text"
+                        className="input"
+                        onChange={(e) => setData("password_api", e.target.value)}
+                        value={data.password_api}
+                    />
+                    {errors.password_api && <ErrorForm content={errors.password_api}/>}
+                </div>
+            </div>
         </form>
-    </div>
     </>
     );
 }

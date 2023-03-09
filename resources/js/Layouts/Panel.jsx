@@ -22,6 +22,7 @@ export default function Panel({title, children}) {
 
     const [procesos, setProcesos] = useState(false);
     const [recibos, setRecibos] = useState(false);
+    const [admin, setAdmin] = useState(false);
 
     function handleEditarUsuario() {router.get(route("ver_usuario", {empresa: empresa_id, usuario:ID}))}
 
@@ -68,6 +69,27 @@ export default function Panel({title, children}) {
                             height="46px"
                             className="ml-10 mb-4"
                         />
+
+                        <div
+                            onMouseEnter={() => setAdmin(true)}
+                            onMouseLeave={() => setAdmin(false)}
+                        >
+                            <p>Administrador</p>
+                            {admin && (
+                                <ul className="text-end">
+                                    <li className="li-menu">
+                                        <Link href={route("admin_index_usuarios")}>
+                                            <h1>Usuarios</h1>
+                                        </Link>
+                                    </li>
+                                    <li className="li-menu">
+                                        <Link href={route("index_empresas")}>
+                                            <h1>Empresas</h1>
+                                        </Link>
+                                    </li>
+                                </ul>
+                            )}
+                        </div>
                         <div
                             onMouseEnter={() => setProcesos(true)}
                             onMouseLeave={() => setProcesos(false)}
@@ -75,17 +97,12 @@ export default function Panel({title, children}) {
                             <p>Procesos Generales</p>
                                 {procesos &&
                                 <ul className="text-end">
-                                    <li>
+                                    <li className="li-menu">
                                         <Link href={route("index_usuarios",{empresa:empresa_id})}>
                                             <h1>Usuarios</h1>
                                         </Link>
                                     </li>
-                                    <li>
-                                        <Link href={route("index_empresas")}>
-                                            <h1>Empresas</h1>
-                                        </Link>
-                                    </li>
-                                    <li>
+                                    <li className="li-menu">
                                         <Link href={route("index_legajos",{empresa:empresa_id})}>
                                             <h1>Legajos</h1>
                                         </Link>
@@ -100,22 +117,22 @@ export default function Panel({title, children}) {
                             <p>Recibos</p>
                             {recibos && (
                                 <ul className="text-end">
-                                    <li>
+                                    <li className="li-menu">
                                         <Link href={route("index_recibos",{empresa:empresa_id})}>
                                             <h1>Todos</h1>
                                         </Link>
                                     </li>
-                                    <li>
+                                    <li className="li-menu">
                                         <Link href={route("importar_recibos",{empresa:empresa_id})}>
                                             <h1>Generación</h1>
                                         </Link>
                                     </li>
-                                    <li>
+                                    <li className="li-menu">
                                         <Link href={route("firma_empleador_recibos",{empresa:empresa_id})}>
                                             <h1>Autorizar Recibos</h1>
                                         </Link>
                                     </li>
-                                    <li>
+                                    <li className="li-menu">
                                         <Link href={route("register2FA_recibos",{empresa:empresa_id})}>
                                             <h1>Autenticación de dos factores</h1>
                                         </Link>

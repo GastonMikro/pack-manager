@@ -5,9 +5,25 @@ import Panel from '@/Layouts/Panel';
 import ErrorForm from '@/Components/ErrorForm';
 import FlashMessages from '@/Components/FlashMessages';
 import Select from "react-select";
+import Breadcrumb from '@/Components/Breadcrumb';
 
 function Show() {
     let {errors,legajo, empresas, empresa_id}=usePage().props
+    const empresa=empresas.find(empresa=>empresa.id === empresa_id).razon_social
+    const crumbs = [
+        {
+            crumb: empresa,
+            href: "",
+        },
+        {
+            crumb: "Legajos",
+            href: route('index_legajos',empresa_id),
+        },
+        {
+            crumb: legajo.nombre,
+            href: "",
+        },
+    ];
     empresas=empresas.map(empresa=> {return {value: empresa.id,label: empresa.razon_social}})
 
     const { data, setData } = useForm({
@@ -16,6 +32,8 @@ function Show() {
         fecha_alta:legajo.fecha_alta.split(" ")[0]||"",
         empresa_id: legajo.empresa_id||"",
         email_corporativo: legajo.email_corporativo||"",
+        cuil:legajo.usuario[0]?.cuil||"",
+        email:legajo.usuario[0]?.email||"",
     })
 
     function handleCuil(e) {
@@ -44,23 +62,20 @@ function Show() {
         e.preventDefault();
         router.patch(route('editar_legajo', {empresa: empresa_id, legajo:legajo}), data)
     }
+
     return (
     <>
     <FlashMessages/>
+    <Breadcrumb crumbs={crumbs}/>
     <div className="contenedor">
-        <div className="m-4 font-bold">
-            <h1 className="text-2xl">Procesos Generales</h1>
-            <h2 className="text-xl mt-2">Legajo</h2>
-        </div>
-        <h3 className="titulo">Editar</h3>
 
-        <div className="botonera">
-            <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
+        <div className="botonera justify-end">
+            <button className="btn-verde" onClick={submit}>Aceptar</button>
             <Link href={route("index_legajos",empresa_id) }>
-                <button className="btn-rojo ml-2">Volver</button>
+                <button className="btn-rojo ml-2 mr-4">Volver</button>
             </Link >
         </div>
-        <form className="px-8"> 
+        <form className="px-4"> 
             <div className="form-padre">
                 <div className="form-uno">
                     <label className='font-bold'>Nombre<span className="rojo">*</span></label>
@@ -85,33 +100,7 @@ function Show() {
                     {errors.numero_legajo && <ErrorForm content={errors.numero_legajo}/>}
                 </div>
             </div>
-            {/* <div className="form-padre">
-                <div className="form-uno">
-                    <label className='font-bold'>
-                        C.U.I.L.<span className="rojo">*</span>
-                    </label>
-                    <input
-                        name="cuil"
-                        type="cuil"
-                        className="input"
-                        value={data.cuil}
-                        onChange={(e) => handleCuil(e)}
-                        disabled
-                    />
-                    {errors.cuil && <ErrorForm content={errors.cuil}/>}
-                </div>
-                <div className="form-dos">
-                    <label className='font-bold'>Email<span className="rojo">*</span></label>
-                    <input
-                        name="email"
-                        type="email"
-                        className="input"
-                        onChange={(e) => setData("email", e.target.value)}
-                        value={data.email}
-                    />
-                    {errors.email && <ErrorForm content={errors.email}/>}
-                </div>
-            </div> */}
+            
             <div className="form-padre">
                 <div className="form-uno">
                     <label className='font-bold'>
@@ -159,6 +148,43 @@ function Show() {
                     {errors.empresa && <ErrorForm content={errors.empresa}/>}
                 </div>
         </form>
+
+        <div className='flex justify-center items-center my-4'>
+            <h3 className="titulo mr-4">Usuario</h3>
+            <Link href={route("ver_usuario", { empresa:empresa_id, usuario:legajo.usuario_id }) }>
+                <p className='underline cursor-pointer hover:font-bold'>Editar</p>
+            </Link >
+        </div>
+
+        <div className="form-padre px-4">
+            <div className="form-uno">
+                <label className='font-bold'>
+                    C.U.I.L.<span className="rojo">*</span>
+                </label>
+                <input
+                    name="cuil"
+                    type="text"
+                    className="input bg-gray-200 cursor-not-allowed"
+                    value={data?.cuil}
+                    onChange={(e) => handleCuil(e)}
+                    disabled
+                />
+                {errors.cuil && <ErrorForm content={errors.cuil}/>}
+            </div>
+            <div className="form-dos">
+                <label className='font-bold'>Email<span className="rojo">*</span></label>
+                <input
+                    name="email"
+                    type="email"
+                    className="input bg-gray-200 cursor-not-allowed"
+                    onChange={(e) => setData("email", e.target.value)}
+                    value={data.email}
+                    disabled
+                />
+                {errors.email && <ErrorForm content={errors.email}/>}
+            </div>
+        </div>
+
     </div>
     </>
     );

@@ -9,16 +9,16 @@ import Breadcrumb from '@/Components/Breadcrumb';
 
 function Create() {
 
-    const {errors, roles, empresas, empresa_id,empresa_razon_social}=usePage().props
+    const {errors, roles, empresas}=usePage().props
 
     const crumbs = [
         {
-            crumb: empresa_razon_social,
+            crumb: "Administrador",
             href: "",
         },
         {
             crumb: "Usuarios",
-            href: route('index_usuarios',empresa_id),
+            href: route('admin_index_usuarios'),
         },
         {
             crumb: "Alta",
@@ -71,23 +71,18 @@ function Create() {
 
     function submit(e) {
         e.preventDefault();
-        router.post(route('alta_usuario',empresa_id), data)
+        router.post(route('admin_alta_usuario'), data)
     }
 
-    console.log(errors)
 
     return (
     <>
     <FlashMessages/>
     <Breadcrumb crumbs={crumbs}/>
-        {/* <div className="m-4">
-            <h1 className="text-2xl font-bold">Procesos Generales</h1>
-            <h2 className="text-xl mt-2 font-bold">Usuario</h2>
-        </div> */}
 
         <div className="botonera justify-end">
             <button className="btn-verde" onClick={submit}>Aceptar</button>
-            <Link href={route("index_usuarios",empresa_id) }>
+            <Link href={route("admin_index_usuarios") }>
                 <button className="btn-rojo ml-2 mr-4">Cancelar</button>
             </Link >
         </div>
@@ -101,6 +96,7 @@ function Create() {
                         className="input"
                         onChange={(e) => setData("nombre", e.target.value)}
                         value={data.nombre}
+                        autoComplete={false}
                     />
                      {errors.nombre && <ErrorForm content={errors.nombre}/>}
                 </div>
@@ -144,8 +140,8 @@ function Create() {
                     {errors.cuil && <ErrorForm content={errors.cuil}/>}
                 </div>
             </div>
-           {/*  <div className="form-padre justify-start"> */}
-                {/* <div className="form-uno">
+           <div className="form-padre">
+                <div className="form-uno">
                 <label className='font-bold'>Empresa<span className="rojo">*</span></label>
                     <Select
                         defaultValue={empresas.find((empresa) => empresa.value === data.empresas)}
@@ -164,8 +160,8 @@ function Create() {
                         options={empresas}
                     />
                     {errors.empresas && <ErrorForm content={errors.empresas}/>}
-                </div> */}
-                <div className="form-uno pr-16">
+                </div>
+                <div className="form-dos">
                     <label className='font-bold'>Rol<span className="rojo">*</span></label>
                         <Select
                          defaultValue={roles.find((roles) => roles.value === data.roles)}
@@ -185,7 +181,7 @@ function Create() {
                     />
                     {errors.roles && <ErrorForm content={errors.roles}/>}
                 </div>
-           {/*  </div> */}
+            </div>
         </form>
     </>
     );

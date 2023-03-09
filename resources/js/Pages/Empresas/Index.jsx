@@ -7,10 +7,21 @@ import { usePrevious } from "react-use";
 import pickBy from "lodash/pickBy";
 import Search from "@/Components/Search";
 import Swal from 'sweetalert2';
+import Breadcrumb from '@/Components/Breadcrumb';
 
 function Index() {
-
     const {empresas, filters} = usePage().props
+
+    const crumbs = [
+        {
+            crumb: "Administrador",
+            href: "",
+        },
+        {
+            crumb: "Empresas",
+            href: "",
+        },
+    ];
 
      //Búsqueda
      const [values, setValues] = useState({search: filters.search || "",});
@@ -66,32 +77,28 @@ function Index() {
     return (
         <>
         <FlashMessages/>
-            <div className="contenedor">
-                <div className="m-4 font-bold">
-                    <h1 className="text-2xl">Procesos Generales</h1>
-                    <h2 className="text-xl mt-2">Empresas</h2>
-                </div>
-
+            <Breadcrumb crumbs={crumbs}/>
                 <div className="botonera-dos">
-                    <div>
-                        <Link href={route("nueva_empresa")}>
-                            <button className="btn-nuevo ml-4">Nuevo</button>
-                        </Link>
-
-                        {empresaSeleccionada !== "" && (
-                                <button className="btn-claro ml-2" onClick={handleEditar}>Editar</button>)}
-                        {empresaSeleccionada !== "" && empresaSeleccionada.activo==1 &&(
-                            <button className="btn-rojo ml-2" onClick={handleHabilitacion}>Deshabilitar</button>)}
-                         {empresaSeleccionada !== "" && empresaSeleccionada.activo==0 &&(
-                            <button className="btn-verde ml-2" onClick={handleHabilitacion}>Habilitar</button>)}
-                    </div>
-                    <div className="w-1/3 mr-4">
+                    <div className="w-1/3 ml-4">
                         <Search
                             placeholder="Buscar por razón social o CUIT"
                             parentValues={values}
                             handleSearch={handleSearch}
                         />
                     </div>
+                    <div>
+                        {empresaSeleccionada !== "" && (
+                                <button className="btn-claro ml-2" onClick={handleEditar}>Editar</button>)}
+                        {empresaSeleccionada !== "" && empresaSeleccionada.activo==1 &&(
+                            <button className="btn-rojo mx-2" onClick={handleHabilitacion}>Deshabilitar</button>)}
+                            {empresaSeleccionada !== "" && empresaSeleccionada.activo==0 &&(
+                            <button className="btn-verde mx-2" onClick={handleHabilitacion}>Habilitar</button>)}
+
+                            <Link href={route("nueva_empresa")}>
+                            <button className="btn-nuevo mr-4">Nuevo</button>
+                        </Link>
+                    </div>
+                    
                 </div>
 
                 <div className="table-container">
@@ -112,7 +119,7 @@ function Index() {
                                     onClick={()=>handleEmpresa(empresa.id)}
                                     key={empresa.id}
                                 >
-                                    <td className='w-16 pl-8'> 
+                                    <td className='w-32 pl-16'> 
                                         <img src={empresa.logo_file_path} alt="Logo Empresa" className=""/>
                                     </td>
                                     <td>{empresa.razon_social}</td>
@@ -125,15 +132,13 @@ function Index() {
                                     </td>
                                 </tr>
                             ))}
-                             {empresas?.length == 0 &&
+                                {empresas?.length == 0 &&
                             <tr className="text-center">
                             <td colSpan="4">No se cargaron datos</td>
                             </tr>}
                         </tbody>
                     </table>
                 </div>
-               
-            </div>
         </>
     );
 }

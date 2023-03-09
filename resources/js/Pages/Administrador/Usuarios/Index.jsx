@@ -10,11 +10,13 @@ import Swal from 'sweetalert2';
 import Breadcrumb from '@/Components/Breadcrumb';
 
 function Index() {
-    const {usuarios, filters, empresa_id,empresa_razon_social} = usePage().props
+    const {usuarios, filters,empresas_input} = usePage().props
+
+    console.log(empresas_input)
 
     const crumbs = [
         {
-            crumb: empresa_razon_social,
+            crumb: "Administrador",
             href: "",
         },
         {
@@ -23,7 +25,6 @@ function Index() {
         },
     ];
 
-
     //Búsqueda
     const [values, setValues] = useState({search: filters.search || "",});
     useEffect(() => {
@@ -31,7 +32,7 @@ function Index() {
             const query = Object.keys(pickBy(values)).length
                 ? pickBy(values)
                 : { remember: "forget" };
-            router.get(route(route().current(),empresa_id), query, {
+            router.get(route(route().current()), query, {
                 replace: true,
                 preserveState: true,
             });
@@ -64,16 +65,16 @@ function Index() {
                 cancelButtonText: 'Cancelar',
               }).then((result) => {
                 if (result.isConfirmed) {
-                    router.post(route("estado_usuario",{ empresa:empresa_id, usuario:usuarioSeleccionado?.id }),[],
-        {onSuccess: () => setUsuarioSeleccionado("")})
-                    }})
-        }else{
-            router.post(route("estado_usuario",{ empresa:empresa_id, usuario:usuarioSeleccionado?.id }),[],
-        {onSuccess: () => setUsuarioSeleccionado("")})
+                  /*   router.post(route("estado_usuario",{ empresa:empresa_id, usuario:usuarioSeleccionado?.id }),[],
+                    {onSuccess: () => setUsuarioSeleccionado("")}) */}})
+                    }else{
+                        /* router.post(route("estado_usuario",{ empresa:empresa_id, usuario:usuarioSeleccionado?.id }),[],
+                    {onSuccess: () => setUsuarioSeleccionado("")}
+                    ) */
+                    }
         }
-    }
 
-    function handleEditar(){router.get(route("ver_usuario", { empresa:empresa_id, usuario:usuarioSeleccionado?.id }))}
+    function handleEditar(){router.get(route("admin_ver_usuario", {usuario:usuarioSeleccionado?.id }))}
 
     return (
         <>
@@ -99,8 +100,8 @@ function Index() {
                          {usuarioSeleccionado !== "" && usuarioSeleccionado.activo==0 &&(
                             <button className="btn-verde mr-2" onClick={handleHabilitacion}>Habilitar</button>)}
 
-                        <Link href={route("nuevo_usuario",empresa_id)}>
-                            <button className="btn-nuevo mr-4">Nuevo</button>
+                        <Link href={route("admin_nuevo_usuario")}>
+                            <button className="btn-nuevo mr-8">Nuevo</button>
                         </Link>
                     </div>
                 </div>

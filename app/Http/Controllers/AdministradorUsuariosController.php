@@ -14,52 +14,42 @@ use App\Http\Requests\UsuarioRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
-class UsuarioController extends Controller
+class AdministradorUsuariosController extends Controller
 {
-    public function index(Request $request, Empresa $empresa): Response
+    public function index(Request $request): Response
     {
         $usuarios = Usuario::query()
-        ->whereHas('empresas', function ($query) use ($empresa) {
-            $query->where('empresa_id', $empresa->id);
+        ->when($request->has('search'),function($query){
+            $query->where('nombre','like','%' . request()->get('search')  . '%')
+            ->orWhere('cuil','like','%' . request()->get('search')  . '%');
         })
-            ->when($request->has('search'),function($query){
-                $query->where('nombre','like','%' . request()->get('search')  . '%')
-                ->orWhere('cuil','like','%' . request()->get('search')  . '%');
-            })
-            ->orderBy('nombre','ASC')
-            ->get();
+        ->orderBy('nombre','ASC')
+        ->get();
 
-        return Inertia::render('Usuarios/Index',[
+        return Inertia::render('Administrador/Usuarios/Index',[
             'usuarios' =>$usuarios,
             'filters' => $request->only(['search']),
-            'empresa_id' => $empresa->id,
-            'empresa_razon_social' => $empresa->razon_social,
-
         ]);
     }
 
-    public function create(Empresa $empresa): Response
+    public function create(): Response
     {
-        return Inertia::render('Usuarios/Create',[
+        return Inertia::render('Administrador/Usuarios/Create',[
             'roles' =>Rol::all(),
             'empresas' =>Empresa::all(),
-            'empresa_id' => $empresa->id,
-            'empresa_razon_social' => $empresa->razon_social,
         ]);
     }
 
-    public function show(Empresa $empresa , Usuario $usuario): Response
+    public function show( Usuario $usuario): Response
     {
         $usuario->roles = $usuario->roles()->get();
         $usuario->empresas = $usuario->empresas()->get();
         $usuario->legajos = $usuario->legajos()->get();
 
-        return Inertia::render('Usuarios/Show',[
+        return Inertia::render('Administrador/Usuarios/Show',[
             'usuario' => $usuario,
             'roles' =>Rol::all(),
             'empresas' =>Empresa::all(),
-            'empresa_id' => $empresa->id,
-            'empresa_razon_social' => $empresa->razon_social,
         ]);
     }
 
@@ -86,7 +76,7 @@ class UsuarioController extends Controller
 
     public function store(Empresa $empresa , UsuarioRequest $request): RedirectResponse
     {
-           /*  dd($empresa->id,); */
+           /*  dd($request); */
 
         $empresa_id=$empresa->id;
         $data = $request->validated();
@@ -105,8 +95,6 @@ class UsuarioController extends Controller
         foreach($data['empresas'] as $empresa){
             $usuario->empresas()->attach($empresa);
         }
-
-        $usuario->empresas()->attach($empresa->id);
         DB::commit();
         return redirect()->route('index_usuarios',$empresa_id)->with('exito','Usuario Creado!');
     }

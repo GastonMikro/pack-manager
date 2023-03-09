@@ -4,9 +4,21 @@ import { router } from "@inertiajs/core";
 import Panel from "@/Layouts/Panel";
 import FlashMessages from "@/Components/FlashMessages";
 import Swal from 'sweetalert2';
+import Breadcrumb from '@/Components/Breadcrumb';
 
 export default function Index(){
-    const {recibos, empresa_id} = usePage().props
+    const {recibos, empresa_id,empresa_razon_social} = usePage().props
+
+    const crumbs = [
+        {
+            crumb: empresa_razon_social,
+            href: "",
+        },
+        {
+            crumb: "Recibos",
+            href: "",
+        },
+    ];
 
     const [reciboSeleccionado, setReciboSeleccionado] = useState("");
 
@@ -41,12 +53,13 @@ export default function Index(){
         }
 
     return (
-        <>  <FlashMessages/>
-            <div className="contenedor">
-                <div className="m-4 font-bold">
+        <>  
+        <FlashMessages/>
+        <Breadcrumb crumbs={crumbs}/>   
+                {/* <div className="m-4 font-bold">
                     <h1 className="text-2xl">Recibos</h1>
                     <h2 className="text-xl mt-2">Todos</h2>
-                </div>
+                </div> */}
 
                 <div className="table-container">
                     <table className="table">
@@ -102,7 +115,6 @@ export default function Index(){
                         </tbody>
                     </table>
                 </div>
-            </div>
         </>
     );
 }

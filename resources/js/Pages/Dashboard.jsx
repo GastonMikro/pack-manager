@@ -7,9 +7,11 @@ export default function Dashboard() {
 
     return (
         <div className="py-12 w-full flex flex-col items-center">  
-            <div className='flex justify-between mb-16 w-full px-4'>
-                <h1 className='font-bold capitalize text-4xl'>{empresa.razon_social}</h1>        
-                <img src={empresa.logo_file_path} alt="Logo Empresa" className="w-32 h-auto"/>
+            <div className='flex justify-center mb-16 w-full px-4'>
+                {empresa.logo_file_path?
+                <img src={empresa.logo_file_path} alt="Logo Empresa" className="w-32 h-auto"/>:
+                <h1 className='font-bold capitalize text-4xl'>{empresa.razon_social}</h1>  
+                }
             </div>
 
             <div className='flex w-full'>
