@@ -6,6 +6,7 @@ import Select from "react-select";
 import ErrorForm from '@/Components/ErrorForm';
 import FlashMessages from '@/Components/FlashMessages';
 import Breadcrumb from '@/Components/Breadcrumb';
+import TabsShowEmpresa from '@/Components/Tabs/TabsShowEmpresa';
 
 function Show() {
     let {errors, provincias, localidades, departamentos, empresa}=usePage().props
@@ -123,6 +124,7 @@ function Show() {
     <>
         <FlashMessages/>
         <Breadcrumb crumbs={crumbs}/>
+        <TabsShowEmpresa tab={`Datos`} empresa={empresa}/>
         <div className="botonera justify-end">
             <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
             <Link href={route("index_empresas") }>
@@ -130,7 +132,7 @@ function Show() {
             </Link >
         </div>
 
-        <div className="w-10/12 mt-4 mx-auto flex flex-col justify-center items-center pr-4">
+        <div className="w-10/12 mx-auto flex flex-col justify-center items-center pr-4">
             <img src={avatar} alt="Logo Empresa" className="w-1/4 mb-4"/>
             <div>
                 <input
@@ -146,7 +148,7 @@ function Show() {
             </div>
         </div>
 
-        <form className="px-4"> 
+        <form className="px-4 mb-4"> 
             <h3 className="flex justify-start ml-8 font-bold mb-2">Datos Principales</h3>
             <div className="form-padre">
                 <div className="form-uno">

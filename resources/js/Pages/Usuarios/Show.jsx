@@ -7,6 +7,7 @@ import ErrorForm from "@/Components/ErrorForm";
 import Swal from "sweetalert2";
 import { router } from "@inertiajs/core";
 import Breadcrumb from "@/Components/Breadcrumb";
+import ModalCambiarContrasenia from "@/Components/Modales/ModalCambiarContrasenia";
 
 
 export default function Show() {
@@ -35,6 +36,9 @@ export default function Show() {
         rol.value = rol.id
         return rol
     })
+
+    const rolesusuario=usuario.roles.map(rol=> {return {value: rol.id,label: rol.nombre}})
+    const empresas_usuario=usuario.empresas.map(empresa=> {return {value: empresa.id,label: empresa.razon_social}})
     
     const { data, setData } = useForm({
         nombre: usuario?.nombre|| "",
@@ -45,27 +49,12 @@ export default function Show() {
         empresas:usuario?.empresas.map(e=>e.id)||[]
     })
 
-    const rolesusuario=usuario.roles.map(rol=> {return {value: rol.id,label: rol.nombre}})
-
-    const empresas_usuario=usuario.empresas.map(empresa=> {return {value: empresa.id,label: empresa.razon_social}})
-
     function cambiarPassword(e) {
         e.preventDefault();
         /* Inertia.get(route("usuario.cambioPassword",{company_id: company_id,id: usuario.id})) */
     }
-
-    function restablecerPassword(e) {
-        /* Swal.fire({
-            title: 'ADVERTENCIA:',
-            text: `Esta por blanquear la contraseña de un usuario y generar una nueva aleatoria que llegará a su mail. ¿Desea continuar?`,
-            showCancelButton: true,
-            confirmButtonText: 'Continuar',
-            cancelButtonText: 'Cancelar',
-          }).then((result) => {
-            if (result.isConfirmed) {
-                e.preventDefault();
-                Inertia.post(route("usuario.restablecerPassword",{company_id: company_id,id: usuario.id}))}}) */
-            }
+    
+    const [password, setPassword] = useState(false);
 
     function handleCuil(e) {
         if (
@@ -100,6 +89,7 @@ export default function Show() {
 
     return (
         <>
+     { password && <ModalCambiarContrasenia usuario={usuario} handleClick={()=>setPassword(false)}/>}
         <FlashMessages/>
         <Breadcrumb crumbs={crumbs}/>
             <div className="botonera justify-end">
@@ -108,7 +98,7 @@ export default function Show() {
                     <button className="btn-rojo ml-2 mr-4">Volver</button>
                 </Link>
             </div>
-            <form className="px-4"> 
+            <div className="px-4"> 
                 <div className="form-padre">
                     <div className="form-uno">
                         <label className='font-bold'>Nombre de Usuario<span className="rojo">*</span></label>
@@ -140,11 +130,12 @@ export default function Show() {
                         <input
                             name="password"
                             type="password"
-                            className="input-disabled cursor-not-allowed my-2"
-                            disabled={true}
+                            className="input bg-gray-200 cursor-not-allowed my-2"
+                            disabled
                             onChange={(e)=>setData("password", e.target.value)}
                             value={data.password||""}
                         />
+                        <button className="btn-rojo h-6 w-full" onClick={()=>setPassword(true)}>Cambiar Contraseña</button>
                     </div>
                     <div className="form-dos">
                         <label className='font-bold'>
@@ -203,8 +194,8 @@ export default function Show() {
                             {errors.roles && <ErrorForm content={errors.roles}/>}
                     </div>
                 </div>
-            </form>
-           {usuario.legajos.length > 0?  
+            </div>
+           {usuario.legajos.length > 0 ?  
             <div className="px-12 mt-4 font-bold ">
                 <label>Legajos Asociados</label>
                 <div className="flex bg-white rounded mt-2 px-4">
@@ -214,7 +205,7 @@ export default function Show() {
                     <p className="p-2 w-1/4 hover:underline text-center"></p>
                 </div>
                 {usuario.legajos.map(legajo=>
-                <div className="flex bg-white rounded mt-2 px-4">
+                <div className="flex bg-white rounded mt-2 px-4" key={legajo.id}>
                     <p className="p-2 w-1/4 text-center">{legajo.nombre}</p>
                     <p className="p-2 w-1/4 text-center">{empresas.find(empresa=>empresa.id===legajo.empresa_id).razon_social}</p>
                     <p className="p-2 w-1/4 text-center">{legajo.email_corporativo ? legajo.email_corporativo : "-" }</p>

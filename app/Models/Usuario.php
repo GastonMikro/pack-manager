@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-
 class Usuario extends Model
 {
     use HasFactory;
@@ -21,7 +20,6 @@ class Usuario extends Model
         'password_autenticacion',
         'cuil',
         'activo',
-        'ultimo_acceso',
     ];
 
     protected $hidden = [
@@ -52,5 +50,18 @@ class Usuario extends Model
     {
         return $this->hasMany(Legajo::class);
     }
+
+    /**
+     * @return HasMany
+     */
+    public function loginHistories(): HasMany
+    {
+        return $this->hasMany(LoginHistory::class);
+    }
+
+    public function lastLogin()
+{
+    return $this->hasOne(LoginHistory::class)->latestOfMany();
+}
 
 }

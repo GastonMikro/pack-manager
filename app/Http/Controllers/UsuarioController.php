@@ -19,6 +19,7 @@ class UsuarioController extends Controller
     public function index(Request $request, Empresa $empresa): Response
     {
         $usuarios = Usuario::query()
+        ->with('lastLogin')
         ->whereHas('empresas', function ($query) use ($empresa) {
             $query->where('empresa_id', $empresa->id);
         })
@@ -34,7 +35,6 @@ class UsuarioController extends Controller
             'filters' => $request->only(['search']),
             'empresa_id' => $empresa->id,
             'empresa_razon_social' => $empresa->razon_social,
-
         ]);
     }
 
@@ -86,8 +86,6 @@ class UsuarioController extends Controller
 
     public function store(Empresa $empresa , UsuarioRequest $request): RedirectResponse
     {
-           /*  dd($empresa->id,); */
-
         $empresa_id=$empresa->id;
         $data = $request->validated();
         DB::beginTransaction();
@@ -102,10 +100,6 @@ class UsuarioController extends Controller
         foreach($data['roles'] as $rol){
             $usuario->roles()->attach($rol);
         }
-        foreach($data['empresas'] as $empresa){
-            $usuario->empresas()->attach($empresa);
-        }
-
         $usuario->empresas()->attach($empresa->id);
         DB::commit();
         return redirect()->route('index_usuarios',$empresa_id)->with('exito','Usuario Creado!');

@@ -28,16 +28,23 @@ class UsuarioRequest extends FormRequest
     {
         $rules = [];
         if($this->getMethod() === 'POST'){
-            $rules = [
+            if($this->routeIs('admin_alta_usuario'))
+            {$rules = [
+                'nombre' => 'required|string',
+                'email' => 'required|email|unique:users',
+                'cuil' => ['required' , 'size:13', 'unique:users,cuil' , new CustomCuit],
+                'password_autenticacion' => 'nullable|string',
+                'roles' => 'required|array',
+                'empresas' => 'array', 
+            ];}
+            else{$rules = [
                 'nombre' => 'required|string',
                 'email' => 'required|email|unique:users',
                 'cuil' => ['required' , 'size:13', 'unique:users,cuil' , new CustomCuit],
                 'password' => 'required|string',
                 'password_autenticacion' => 'nullable|string',
                 'roles' => 'required|array',
-                'empresas' => 'array',
-                'empresa_id' => 'nullable|integer',  
-            ];
+            ];}
             
         }elseif($this->getMethod() === 'PATCH'){
             $rules = [
@@ -46,7 +53,6 @@ class UsuarioRequest extends FormRequest
                 'cuil' => ['required' , 'size:13' , Rule::unique('users' , 'cuil')->ignore($this->usuario->id), new CustomCuit],
                 'roles' => 'required|array',
                 'empresas' => 'required|array',
-                'empresa_id' => 'nullable|integer',
             ];
         }
         return $rules;

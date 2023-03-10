@@ -5,8 +5,8 @@ import Panel from '@/Layouts/Panel';
 import ErrorForm from '@/Components/ErrorForm';
 import FlashMessages from '@/Components/FlashMessages';
 import Select from "react-select";
-import BuscarUsuario from '@/Components/BuscarUsuario';
 import Breadcrumb from '@/Components/Breadcrumb';
+import BuscarUsuario from '@/Components/Modales/BuscarUsuario';
 
 function Create() {
     const {errors, empresas,empresa_id}=usePage().props
@@ -45,6 +45,8 @@ function Create() {
         fecha_alta:"",
         generar_usuario: true,
     })
+
+    console.log(data)
 
     useEffect(() => {
         if(usuarioSeleccionado !== "")

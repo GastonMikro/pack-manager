@@ -40,7 +40,7 @@ class AdministradorUsuariosController extends Controller
         ]);
     }
 
-    public function show( Usuario $usuario): Response
+    public function show(Usuario $usuario): Response
     {
         $usuario->roles = $usuario->roles()->get();
         $usuario->empresas = $usuario->empresas()->get();
@@ -53,7 +53,7 @@ class AdministradorUsuariosController extends Controller
         ]);
     }
 
-    public function update(Empresa $empresa , Usuario $usuario, UsuarioRequest $request)
+    public function update( UsuarioRequest $request,Usuario $usuario)
     {
         $data = $request->validated();
 
@@ -74,18 +74,17 @@ class AdministradorUsuariosController extends Controller
         $request->session()->flash('exito', 'Usuario Editado!');
     }
 
-    public function store(Empresa $empresa , UsuarioRequest $request): RedirectResponse
+    public function store(UsuarioRequest $request): RedirectResponse
     {
-           /*  dd($request); */
-
-        $empresa_id=$empresa->id;
         $data = $request->validated();
+        $random = str_shuffle('abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890!$%^&!$%^&');
+        $password = Hash::make(substr($random, 0, 10));
         DB::beginTransaction();
         $usuario = Usuario::create([
             'nombre' => $data['nombre'],
             'email' => $data['email'],
             'cuil' => $data['cuil'],
-            'password' => Hash::make($data['password']),
+            'password' => $password,
             'password_autenticacion' => $data['password_autenticacion'],
         ]);
 
@@ -96,11 +95,10 @@ class AdministradorUsuariosController extends Controller
             $usuario->empresas()->attach($empresa);
         }
         DB::commit();
-        return redirect()->route('index_usuarios',$empresa_id)->with('exito','Usuario Creado!');
+        return redirect()->route('admin_index_usuarios')->with('exito','Usuario Creado!');
     }
 
-    public function cambioEstado(Empresa $empresa, Usuario $usuario, Request $request){
-        $empresa_id=$empresa->id;
+    public function cambioEstado( Request $request, Usuario $usuario){
         $usuario->activo = !$usuario->activo;
         $usuario->save();
         if($usuario->activo == 0){

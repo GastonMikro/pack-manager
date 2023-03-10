@@ -14,9 +14,14 @@ Route::GET('backoffice/administrador/usuarios/{usuario}',[AdministradorUsuariosC
 Route::PATCH('backoffice/administrador/usuarios/{usuario}/editar',[AdministradorUsuariosController::class,'update'])->name('admin_editar_usuario');
 Route::POST('backoffice/administrador/usuarios/{usuario}/cambio_estado/',[AdministradorUsuariosController::class,'cambioEstado'])->name('admin_estado_usuario');
 
-Route::GET('backoffice/empresas', [AdministradorEmpresasController::class, 'index'])->name('index_empresas');
-Route::GET('backoffice/empresas/alta', [AdministradorEmpresasController::class, 'create'])->name('nueva_empresa');
-Route::POST('backoffice/empresas/nuevo', [AdministradorEmpresasController::class, 'store'])->name('alta_empresa');
-Route::GET('backoffice/empresas/{empresa}',[AdministradorEmpresasController::class,'show'])->name('ver_empresa');
-Route::PATCH('backoffice/empresas/{empresa}/editar',[AdministradorEmpresasController::class,'update'])->name('editar_empresa');
-Route::POST('backoffice/empresas/{empresa}/cambio_estado/',[AdministradorEmpresasController::class,'cambioEstado'])->name('estado_empresa');
+Route::GET('backoffice/administrador/empresas', [AdministradorEmpresasController::class, 'index'])->name('index_empresas');
+Route::GET('backoffice/administrador/empresas/alta', [AdministradorEmpresasController::class, 'create'])->name('nueva_empresa');
+Route::POST('backoffice/administrador/empresas/nuevo', [AdministradorEmpresasController::class, 'store'])->name('alta_empresa');
+
+//Show
+Route::GET('backoffice/administrador/empresas/{empresa}/general',[AdministradorEmpresasController::class,'show'])->name('ver-datos-empresa');
+Route::GET('backoffice/administrador/empresas/{empresa}/usuarios',[AdministradorEmpresasController::class,'usuarios'])->name('ver-usuarios-empresa');
+Route::GET('backoffice/administrador/empresas/{empresa}/configuracion',[AdministradorEmpresasController::class,'configuracion'])->name('ver-configuracion-empresa');
+
+Route::PATCH('backoffice/administrador/empresas/{empresa}/editar',[AdministradorEmpresasController::class,'update'])->name('editar_empresa');
+Route::POST('backoffice/administrador/empresas/{empresa}/cambio_estado/',[AdministradorEmpresasController::class,'cambioEstado'])->name('estado_empresa');

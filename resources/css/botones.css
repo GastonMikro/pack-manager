@@ -43,7 +43,7 @@ button{
     padding: 0 1rem;
 }
 
-.btn-rojo-password {
+/* .btn-rojo-password {
     background: #b90c0c;
     font-family: inherit;
     height: 30px;
@@ -56,14 +56,7 @@ button{
     letter-spacing: 0.15px;
     transition: all 0.2s ease-in-out;
     padding: 0 1rem;
-}
-
-.btn-rojo-password:hover {
-    opacity: 0.8;
-    transition: opacity 0.5s ease-in-out;
-    cursor: pointer;
-    border: none;
-}
+} */
 
 .btn-rojo2 {
     background: #b90c0c;
@@ -149,7 +142,6 @@ button{
   .cerrar-sesion:active {
     box-shadow: inset 0 0 2px 2px rgba(0, 0, 0, 0.2);
   }
-
 
   .switch input {
     display: none;

@@ -4,14 +4,13 @@ import { usePage } from "@inertiajs/react";
 import { usePrevious } from "react-use";
 import pickBy from "lodash/pickBy";
 import Search from "@/Components/Search";
-import ShadeScreen from "./ShadeScreen";
+import ShadeScreen from "../ShadeScreen";
 
 function BuscarUsuario({setUsuarioSeleccionado,handleClick}) {
     const {filters,usuarios,empresa_id} = usePage().props
 
     //Búsqueda
     const [values, setValues] = useState({search: filters.search || "",});
-
     useEffect(() => {
         if (prevValues) {
             const query = Object.keys(pickBy(values)).length
@@ -23,7 +22,6 @@ function BuscarUsuario({setUsuarioSeleccionado,handleClick}) {
             });
         }
     }, [values]);
-
     const prevValues = usePrevious(values);
     function handleSearch(key, value) {
         setValues((values) => ({
@@ -46,7 +44,7 @@ function BuscarUsuario({setUsuarioSeleccionado,handleClick}) {
                             handleSearch={handleSearch}
                         />
                     </div>
-                    <div className="table-container px-0">
+                    <div className="table-container px-0" style={{maxHeight: "50vh"}}>
                         <table className="table text-center">
                             <thead className="table-header">
                                 <tr>

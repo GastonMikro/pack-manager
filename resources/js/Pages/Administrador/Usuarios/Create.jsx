@@ -74,12 +74,10 @@ function Create() {
         router.post(route('admin_alta_usuario'), data)
     }
 
-
     return (
     <>
     <FlashMessages/>
     <Breadcrumb crumbs={crumbs}/>
-
         <div className="botonera justify-end">
             <button className="btn-verde" onClick={submit}>Aceptar</button>
             <Link href={route("admin_index_usuarios") }>
@@ -114,7 +112,7 @@ function Create() {
             </div>
             <div className="form-padre">
                 <div className="form-uno">
-                    <label className='font-bold'>
+                   {/*  <label className='font-bold'>
                         Contraseña<span className="rojo">*</span>
                     </label>
                     <input
@@ -124,7 +122,7 @@ function Create() {
                         value={data.password}
                         onChange={(e) =>setData("password", e.target.value)}
                     />
-                    {errors.password && <ErrorForm content={errors.password}/>}
+                    {errors.password && <ErrorForm content={errors.password}/>} */}
                 </div>
                 <div className="form-dos">
                     <label className='font-bold'>

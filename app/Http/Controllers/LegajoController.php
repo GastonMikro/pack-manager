@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Unique;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Requests\LegajoRequest;
@@ -71,6 +72,10 @@ class LegajoController extends Controller
     public function store(LegajoRequest $request,Empresa $empresa): RedirectResponse
     {
         $data = $request->validated();
+
+        $request->validate([
+            'numero_legajo' => 'unique:legajos,numero_legajo,NULL,id,empresa_id,' . $empresa->id
+        ]);
   
         DB::beginTransaction();
 
@@ -121,18 +126,33 @@ class LegajoController extends Controller
         $usuarioAsociado = Usuario::where('email',$request->email)->first();
 
         if($usuarioAsociado != NULL){$newLegajo->usuario_id = $usuarioAsociado->id;}
-        }
-
         $newLegajo->save();
+        }
 
         DB::commit();
         return redirect()->route('index_legajos',$empresa->id)->with('exito','Legajo Creado!');
     }
 
-
     public function update(Empresa $empresa, Legajo $legajo, LegajoRequest $request)
     {
-        $data = $request->validated();
+        $data = $request->validated(); 
+       
+        $request->validate([
+            'numero_legajo' => [
+                'required',
+                function ($attribute, $value, $fail) use ($legajo) {
+                    $exists = DB::table('legajos')
+                        ->where('numero_legajo', $value)
+                        ->where('empresa_id', $legajo->empresa_id)
+                        ->where('id', '!=', $legajo->id)
+                        ->exists();
+                    if ($exists) {
+                        $fail('El número de legajo ya existe para esta empresa.');
+                    }
+                }
+            ]
+        ]);
+
         DB::beginTransaction();
         $legajo->update([
             'nombre' => $data['nombre'],

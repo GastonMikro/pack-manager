@@ -72,16 +72,19 @@ function Index() {
                 }
     }
 
-    function handleEditar(){router.get(route("ver_empresa", {id:empresaSeleccionada?.id}));}
+    function handleEditar(){router.get(route("ver-datos-empresa", empresaSeleccionada));}
+
+    console.log(empresas)
 
     return (
         <>
         <FlashMessages/>
+
             <Breadcrumb crumbs={crumbs}/>
                 <div className="botonera-dos">
                     <div className="w-1/3 ml-4">
                         <Search
-                            placeholder="Buscar por razón social o CUIT"
+                            placeholder="Buscar por razón social o C.U.I.T."
                             parentValues={values}
                             handleSearch={handleSearch}
                         />
@@ -120,7 +123,7 @@ function Index() {
                                     key={empresa.id}
                                 >
                                     <td className='w-32 pl-16'> 
-                                        <img src={empresa.logo_file_path} alt="Logo Empresa" className=""/>
+                                        <img src={empresa.logo_file_path !== "/storage/" ? empresa.logo_file_path :'/img/LogoPackManager.png' } alt="logo" className=""/>
                                     </td>
                                     <td>{empresa.razon_social}</td>
                                     <td>{empresa.cuit}</td>

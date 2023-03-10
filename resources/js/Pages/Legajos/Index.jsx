@@ -9,6 +9,7 @@ import Search from "@/Components/Search";
 import Select from "react-select";
 import Swal from 'sweetalert2';
 import Breadcrumb from '@/Components/Breadcrumb';
+import FormatDate from '@/Components/FormatDate';
 
 function Index() {
     const {legajos, filters,empresas,empresa_id} = usePage().props
@@ -144,7 +145,7 @@ function Index() {
                                     <td>{legajo.numero_legajo}</td>
                                     <td>{legajo.nombre}</td>
                                     <td>{legajo.cuil? legajo.cuil:"-"}</td>
-                                    <td>{legajo.fecha_alta? legajo.fecha_alta.split(" ")[0].split("-").reverse().join("/"):"-"}</td>
+                                    <td>{legajo.fecha_alta? FormatDate(legajo.fecha_alta):"-"}</td>
                                     <td>{legajo.empresa.razon_social}</td>
                                     <td>
                                         {legajo.activo == 1 ? 

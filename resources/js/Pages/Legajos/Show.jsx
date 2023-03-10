@@ -192,4 +192,4 @@ function Show() {
 
 export default Show;
 
-Show.layout = (page) => <Panel title="Nuevo Legajo" children={page}/>;
+Show.layout = (page) => <Panel title="Legajo" children={page}/>;

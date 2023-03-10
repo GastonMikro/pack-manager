@@ -8,6 +8,7 @@ use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Empresa;
+use App\Models\LoginHistory;
 
 class GeneralController extends Controller
 {
@@ -18,7 +19,13 @@ class GeneralController extends Controller
         ]);
 
         if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password'], 'activo' => 1])){
-            return redirect()->route('elegir_empresa');
+
+        $loginHistory = new LoginHistory();
+        $loginHistory->usuario_id = Auth::id();
+        $loginHistory->login_date = now();
+        $loginHistory->save();
+
+        return redirect()->route('elegir_empresa');
             
         }else{
             return back()

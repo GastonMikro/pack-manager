@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Panel from "@/Layouts/Panel";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import Select from "react-select";
@@ -7,7 +7,6 @@ import ErrorForm from "@/Components/ErrorForm";
 import Swal from "sweetalert2";
 import { router } from "@inertiajs/core";
 import Breadcrumb from "@/Components/Breadcrumb";
-
 
 export default function Show() {
     const { errors, empresas, roles, usuario} = usePage().props
@@ -35,6 +34,9 @@ export default function Show() {
         rol.value = rol.id
         return rol
     })
+
+    const rolesusuario=usuario.roles.map(rol=> {return {value: rol.id,label: rol.nombre}})
+    const empresas_usuario=usuario.empresas.map(empresa=> {return {value: empresa.id,label: empresa.razon_social}})
     
     const { data, setData } = useForm({
         nombre: usuario?.nombre|| "",
@@ -45,17 +47,8 @@ export default function Show() {
         empresas:usuario?.empresas.map(e=>e.id)||[]
     })
 
-    const rolesusuario=usuario.roles.map(rol=> {return {value: rol.id,label: rol.nombre}})
-
-    const empresas_usuario=usuario.empresas.map(empresa=> {return {value: empresa.id,label: empresa.razon_social}})
-
-    function cambiarPassword(e) {
-        e.preventDefault();
-        /* Inertia.get(route("usuario.cambioPassword",{company_id: company_id,id: usuario.id})) */
-    }
-
     function restablecerPassword(e) {
-        /* Swal.fire({
+         Swal.fire({
             title: 'ADVERTENCIA:',
             text: `Esta por blanquear la contraseña de un usuario y generar una nueva aleatoria que llegará a su mail. ¿Desea continuar?`,
             showCancelButton: true,
@@ -63,8 +56,10 @@ export default function Show() {
             cancelButtonText: 'Cancelar',
           }).then((result) => {
             if (result.isConfirmed) {
-                e.preventDefault();
-                Inertia.post(route("usuario.restablecerPassword",{company_id: company_id,id: usuario.id}))}}) */
+                console.log("A")
+              /*   e.preventDefault();
+                Inertia.post(route("usuario.restablecerPassword",{company_id: company_id,id: usuario.id})) */
+            }})
             }
 
     function handleCuil(e) {
@@ -89,10 +84,9 @@ export default function Show() {
         setData("cuil", e.target.value);
     }
 
-
     function submit(e) {
         e.preventDefault();
-        router.patch(route("editar_usuario_admin", usuario),data)
+        router.patch(route("admin_editar_usuario", usuario),data)
     }
 
     return (
@@ -105,7 +99,7 @@ export default function Show() {
                     <button className="btn-rojo ml-2 mr-4">Volver</button>
                 </Link>
             </div>
-            <form className="px-4"> 
+            <div className="px-4"> 
                 <div className="form-padre">
                     <div className="form-uno">
                         <label className='font-bold'>Nombre de Usuario<span className="rojo">*</span></label>
@@ -142,7 +136,9 @@ export default function Show() {
                             onChange={(e)=>setData("password", e.target.value)}
                             value={data.password||""}
                         />
+                        <button className="btn-rojo h-6 w-full" onClick={restablecerPassword}>Restablecer Contraseña</button>
                     </div>
+                    
                     <div className="form-dos">
                         <label className='font-bold'>
                             CUIL<span className="rojo">*</span>
@@ -200,8 +196,7 @@ export default function Show() {
                             {errors.roles && <ErrorForm content={errors.roles}/>}
                     </div>
                 </div>
-            </form>
- 
+            </div>
         </>
     );
 }

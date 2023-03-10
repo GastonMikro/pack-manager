@@ -35,7 +35,12 @@ class EmpresaRequest extends FormRequest
                 'domicilio' => 'required|array',
                 'domicilio.domicilio' => 'required|string',
                 'domicilio.localidad_id' => 'required|integer|exists:localidades,id',
+                'url_api' => 'nullable|string',
+                'db_api' => 'nullable|string',
+                'usuario_api' => 'nullable|string',
+                'password_api' => 'nullable|string',
                 'logo_file_path' => 'nullable|file',
+                'usuarios' => 'array', 
             ];
         
         }elseif($this->getMethod() === 'PATCH'){
@@ -45,6 +50,10 @@ class EmpresaRequest extends FormRequest
                 'data.domicilio' => 'required|array',
                 'data.domicilio.domicilio' => 'required|string',
                 'data.domicilio.localidad_id' => 'required|integer|exists:localidades,id',
+                'data.url_api' => 'nullable|string',
+                'data.db_api' => 'nullable|string',
+                'data.usuario_api' => 'nullable|string',
+                'data.password_api' => 'nullable|string',
                 'data.logo_file_path' => [
                 'sometimes',
                  function ($attribute, $value, $fail) {
@@ -55,7 +64,8 @@ class EmpresaRequest extends FormRequest
                     }
                     $fail($attribute.' must be a file or a string.');
                 },
-            ],
+                ],
+                'usuarios' => 'array', 
             ];
         }
         return $rules;

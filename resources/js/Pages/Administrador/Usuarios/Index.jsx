@@ -10,9 +10,7 @@ import Swal from 'sweetalert2';
 import Breadcrumb from '@/Components/Breadcrumb';
 
 function Index() {
-    const {usuarios, filters,empresas_input} = usePage().props
-
-    console.log(empresas_input)
+    const {usuarios, filters} = usePage().props
 
     const crumbs = [
         {
@@ -65,81 +63,77 @@ function Index() {
                 cancelButtonText: 'Cancelar',
               }).then((result) => {
                 if (result.isConfirmed) {
-                  /*   router.post(route("estado_usuario",{ empresa:empresa_id, usuario:usuarioSeleccionado?.id }),[],
-                    {onSuccess: () => setUsuarioSeleccionado("")}) */}})
+                    router.post(route("admin_estado_usuario", usuarioSeleccionado?.id ),[],
+                    {onSuccess: () => setUsuarioSeleccionado("")}) }})
                     }else{
-                        /* router.post(route("estado_usuario",{ empresa:empresa_id, usuario:usuarioSeleccionado?.id }),[],
+                         router.post(route("admin_estado_usuario",usuarioSeleccionado?.id),[],
                     {onSuccess: () => setUsuarioSeleccionado("")}
-                    ) */
+                    ) 
                     }
         }
 
-    function handleEditar(){router.get(route("admin_ver_usuario", {usuario:usuarioSeleccionado?.id }))}
+    function handleEditar(){router.get(route("admin_ver_usuario", usuarioSeleccionado?.id ))}
 
     return (
         <>
         <FlashMessages/>
         <Breadcrumb crumbs={crumbs}/>   
-                {/* <div className="m-4">
-                    <h1 className="text-2xl font-bold">Procesos Generales</h1>
-                    <h2 className="text-xl mt-2 font-bold">Usuarios</h2>
-                </div> */}
-                <div className="botonera-dos items-center">
-                    <div className="w-1/3 ml-4">
-                        <Search
-                            placeholder="Buscar por nombre o C.U.I.L"
-                            parentValues={values}
-                            handleSearch={handleSearch}
-                        />
-                    </div>
-                    <div>
-                        {usuarioSeleccionado !== "" && (
-                                <button className="btn-claro mx-2" onClick={handleEditar}>Editar</button>)}
-                        {usuarioSeleccionado !== "" && usuarioSeleccionado.activo==1 &&(
-                            <button className="btn-rojo mr-2" onClick={handleHabilitacion}>Deshabilitar</button>)}
-                         {usuarioSeleccionado !== "" && usuarioSeleccionado.activo==0 &&(
-                            <button className="btn-verde mr-2" onClick={handleHabilitacion}>Habilitar</button>)}
-
-                        <Link href={route("admin_nuevo_usuario")}>
-                            <button className="btn-nuevo mr-8">Nuevo</button>
-                        </Link>
-                    </div>
+            <div className="botonera-dos items-center">
+                <div className="w-1/3 ml-4">
+                    <Search
+                        placeholder="Buscar por nombre o C.U.I.L"
+                        parentValues={values}
+                        handleSearch={handleSearch}
+                    />
                 </div>
+                <div>
+                    {usuarioSeleccionado !== "" && (
+                            <button className="btn-claro mx-2" onClick={handleEditar}>Editar</button>)}
+                    {usuarioSeleccionado !== "" && usuarioSeleccionado.activo==1 &&(
+                        <button className="btn-rojo mr-2" onClick={handleHabilitacion}>Deshabilitar</button>)}
+                        {usuarioSeleccionado !== "" && usuarioSeleccionado.activo==0 &&(
+                        <button className="btn-verde mr-2" onClick={handleHabilitacion}>Habilitar</button>)}
 
-                <div className="table-container">
-                    <table className="table">
-                        <thead className="table-header">
-                            <tr>
-                                <th>Nombre de Usuario</th>
-                                <th>C.U.I.L</th>
-                                <th>Email</th>
-                                <th>Estado</th>
+                    <Link href={route("admin_nuevo_usuario")}>
+                        <button className="btn-nuevo mr-8">Nuevo</button>
+                    </Link>
+                </div>
+            </div>
+
+            <div className="table-container">
+                <table className="table">
+                    <thead className="table-header">
+                        <tr>
+                            <th>Nombre de Usuario</th>
+                            <th>C.U.I.L</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {usuarios?.map((usuario) => (
+                            <tr
+                                className={usuario?.id==usuarioSeleccionado.id?"table-row-seleccionada":"table-row"}
+                                onClick={()=>handleUsuario(usuario.id)}
+                                key={usuario.id}
+                            >
+                                <td>{usuario.nombre}</td>
+                                <td>{usuario.cuil}</td>
+                                <td>{usuario.email}</td>
+                                <td>
+                                    {usuario.activo == 1 ? 
+                                        <img src="/img/Tick.svg" alt="Tick"/>:
+                                        <img src="/img/Cruz.svg" alt="Cruz"/>}
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {usuarios?.map((usuario) => (
-                                <tr
-                                    className={usuario?.id==usuarioSeleccionado.id?"table-row-seleccionada":"table-row"}
-                                    onClick={()=>handleUsuario(usuario.id)}
-                                    key={usuario.id}
-                                >
-                                    <td>{usuario.nombre}</td>
-                                    <td>{usuario.cuil}</td>
-                                    <td>{usuario.email}</td>
-                                    <td>
-                                        {usuario.activo == 1 ? 
-                                            <img src="/img/Tick.svg" alt="Tick"/>:
-                                            <img src="/img/Cruz.svg" alt="Cruz"/>}
-                                    </td>
-                                </tr>
-                            ))}
-                             {usuarios?.length == 0 &&
-                            <tr className="text-center">
-                             <td colSpan="4">No se cargaron datos</td>
-                            </tr>}
-                        </tbody>
-                    </table>
-                </div>
+                        ))}
+                            {usuarios?.length == 0 &&
+                        <tr className="text-center">
+                            <td colSpan="4">No se cargaron datos</td>
+                        </tr>}
+                    </tbody>
+                </table>
+            </div>
         </>
     );
 }

@@ -14,8 +14,9 @@
     margin: 0px 0px 0px 250px;
     padding-top: 7vh;
     border-left: 2px solid #f1f1f1;
-    max-height: 100vh;
-    height: 100vh;
+   /*  max-height: 100vh;
+    height: 100vh; */
+    min-height: 100vh;
     background-color: rgb(247 247 247);
     display: flex;
     flex-direction: column;
@@ -509,4 +510,36 @@ section {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .modalpassword{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height:60vh;
+    transform: translate(-50%,-50%);
+    background-color: white;
+    z-index: 1000;
+    padding: 1.5rem 2rem;
+}
+
+.pestania{
+    --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) ;
+    --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color) ;
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) ;
+    line-height: 1.5 ;
+    text-transform: uppercase ;
+    font-weight: 700 ;
+    font-size: 0.75rem ;
+    line-height: 1rem ;
+    padding-left: 1.25rem ;
+    padding-right: 1.25rem ;
+    padding-top: 0.75rem ;
+    padding-bottom: 0.75rem ;
+    --tw-border-opacity: 1 ;
+    border-radius: 0.25rem ;
+    cursor: pointer ;
+    display: block ;
+    margin-top: 5px;
   }

@@ -21,7 +21,6 @@ Route::GET('/{empresa}/dashboard', [GeneralController::class, 'dashboard'])->nam
 
 require __DIR__.'/auth.php';
 require __DIR__.'/usuarios.php';
-require __DIR__.'/empresas.php';
 require __DIR__.'/legajos.php';
 require __DIR__.'/recibos.php';
 require __DIR__.'/administrador.php';

@@ -9,6 +9,7 @@ use App\Models\Empresa;
 use App\Models\Departamento;
 use App\Models\Localidad;
 use App\Models\Provincia;
+use App\Models\Usuario;
 use App\Http\Requests\EmpresaRequest;
 use App\Services\DomicilioService;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +38,7 @@ class AdministradorEmpresasController extends Controller
             $empresa->logo_file_path = Storage::url($empresa->logo_file_path);
         });
 
-        return Inertia::render('Empresas/Index',[
+        return Inertia::render('Administrador/Empresas/Index',[
             'empresas' => $empresas,
             'filters' => $request->only(['search',])
         ]);
@@ -48,7 +49,7 @@ class AdministradorEmpresasController extends Controller
         $empresa->domicilio = $empresa->domicilio()->get();
         $empresa->logo_file_path = Storage::url($empresa->logo_file_path);
 
-        return Inertia::render('Empresas/Show',[
+        return Inertia::render('Administrador/Empresas/Show',[
             'empresa' => $empresa,
             'provincias' => Provincia::all(),
             'departamentos' => Departamento::all(),
@@ -56,9 +57,34 @@ class AdministradorEmpresasController extends Controller
         ]);
     }
 
+    public function usuarios(Request $request,Empresa $empresa): Response
+    {
+        $usuarios = [];
+        if($request->has('search')){
+            $usuarios = Usuario::query()
+                ->where('nombre','LIKE','%' . $request->get('search') . '%')
+                ->orWhere('cuil','LIKE','%' . $request->get('search') . '%')
+                ->get();
+        }
+        $empresa->usuarios = $empresa->usuarios()->get();
+
+        return Inertia::render('Administrador/Empresas/Usuarios',[
+            'empresa' => $empresa,
+           /*  'usuarios' => Usuario::all(), */
+            'usuarios' => $usuarios,
+        ]);
+    }
+
+    public function configuracion(Empresa $empresa): Response
+    {
+        return Inertia::render('Administrador/Empresas/Configuracion',[
+            'empresa' => $empresa,
+        ]);
+    }
+
     public function create(): Response
     {
-        return Inertia::render('Empresas/Create',[
+        return Inertia::render('Administrador/Empresas/Create',[
             'provincias' => Provincia::all(),
             'departamentos' => Departamento::all(),
             'localidades' => Localidad::all(),
@@ -73,6 +99,10 @@ class AdministradorEmpresasController extends Controller
         $empresa = Empresa::create([
             'razon_social' => $data['razon_social'],
             'cuit' => $data['cuit'],
+            'url_api' => $data['url_api'],
+            'db_api' => $data['db_api'],
+            'usuario_api' => $data['usuario_api'],
+            'password_api' => $data['password_api'],
             'domicilio_id' => $domicilio->id,
         ]);
         $archivo = $data['logo_file_path'];
@@ -92,6 +122,10 @@ class AdministradorEmpresasController extends Controller
         $razon_social = $data['data']['razon_social'];
         $cuit = $data['data']['cuit'];
         $domicilio = $data['data']['domicilio'];
+        $url_api = $data['data']['url_api'];
+        $db_api = $data['data']['db_api'];
+        $usuario_api = $data['data']['usuario_api'];
+        $password_api = $data['data']['password_api'];
         $logo_file_path = $data['data']['logo_file_path'];
 
         DB::beginTransaction();
@@ -100,7 +134,13 @@ class AdministradorEmpresasController extends Controller
             'razon_social' => $razon_social,
             'cuit' => $cuit,
             'domicilio_id' => $domicilio->id,
+            'url_api' => $url_api,
+            'db_api' => $db_api,
+            'usuario_api' => $usuario_api,
+            'password_api' => $password_api,
         ]);
+
+        $empresa->usuarios()->sync($data['usuarios']);
 
         $archivo = $logo_file_path;
         if($archivo instanceof UploadedFile){

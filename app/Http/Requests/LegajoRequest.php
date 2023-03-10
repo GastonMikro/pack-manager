@@ -30,7 +30,7 @@ class LegajoRequest extends FormRequest
             $rules = [
                 'nombre' => 'required|string|min:6',
                 'numero_legajo' => 'required|integer', 
-                /* 'email' => 'required|email|unique:users', */
+                'email' => 'required|email|unique:users',
                 'email_corporativo' => 'nullable|email:rfc',          
                 'fecha_alta' => 'nullable|date',
                 'generar_usuario' => 'boolean',
