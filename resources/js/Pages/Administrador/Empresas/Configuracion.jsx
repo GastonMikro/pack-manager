@@ -10,6 +10,7 @@ import TabsShowEmpresa from '@/Components/Tabs/TabsShowEmpresa';
 
 function Configuracion() {
     let {errors,empresa}=usePage().props
+
     const crumbs = [
         {
             crumb: "Administrador",
@@ -30,16 +31,18 @@ function Configuracion() {
         db_api: empresa.db_api ||"",
         usuario_api: empresa.usuario_api ||"",
         password_api: empresa.password_api ||"",
+        prefijo: empresa.prefijo ||"",
     })
+
+    const [editar, setEditar] = useState(false)
+
+    function recargarDatos(){
+        router.get(route("ver-configuracion-empresa",empresa))
+    }
 
     function submit(e) {
         e.preventDefault();
-        router.post(route("editar_empresa",empresa), {
-            _method: 'patch',
-            data: data
-        },{
-            forceFormData: true
-        })
+        router.patch(route("actualizar-configuracion-empresa",empresa),data)
     }
 
     return (
@@ -47,12 +50,17 @@ function Configuracion() {
         <FlashMessages/>
         <Breadcrumb crumbs={crumbs}/>
         <TabsShowEmpresa tab={`Configuración`} empresa={empresa}/>
+
+        {!editar &&
         <div className="botonera justify-end">
-            <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
-            <Link href={route("index_empresas") }>
-                <button className="btn-rojo ml-2">Volver</button>
-            </Link >
-        </div>
+            <button className="btn-verde ml-8" onClick={()=>setEditar(true)}>Editar</button>
+        </div>}
+
+        {editar &&
+        <div className="botonera justify-end">
+            <button className="btn-verde ml-8" onClick={submit}>Guardar</button>
+            <button className="btn-rojo ml-2" onClick={recargarDatos}>Cancelar</button>
+        </div>}
 
         <form className="px-4"> 
             <div className="form-padre">
@@ -61,9 +69,10 @@ function Configuracion() {
                     <input
                         name="url_api"
                         type="text"
-                        className="input"
+                        className={editar?"input":"input-disabled"}
                         onChange={(e) => setData("url_api", e.target.value)}
                         value={data.url_api}
+                        disabled={!editar}
                     />
                     {errors.url_api && <ErrorForm content={errors.url_api}/>}
                 </div>
@@ -72,9 +81,10 @@ function Configuracion() {
                     <input
                         name="db_api"
                         type="text"
-                        className="input"
+                        className={editar?"input":"input-disabled"}
                         onChange={(e) => setData("db_api", e.target.value)}
                         value={data.db_api}
+                        disabled={!editar}
                     />
                     {errors.db_api && <ErrorForm content={errors.db_api}/>}
                 </div>
@@ -85,9 +95,10 @@ function Configuracion() {
                     <input
                         name="usuario_api"
                         type="text"
-                        className="input"
+                        className={editar?"input":"input-disabled"}
                         onChange={(e) => setData("usuario_api", e.target.value)}
                         value={data.usuario_api}
+                        disabled={!editar}
                     />
                     {errors.usuario_api && <ErrorForm content={errors.usuario_api}/>}
                 </div>
@@ -96,11 +107,28 @@ function Configuracion() {
                     <input
                         name="password_api"
                         type="text"
-                        className="input"
+                        className={editar?"input":"input-disabled"}
                         onChange={(e) => setData("password_api", e.target.value)}
                         value={data.password_api}
+                        disabled={!editar}
                     />
                     {errors.password_api && <ErrorForm content={errors.password_api}/>}
+                </div>
+            </div>
+            <div className="form-padre mb-2">
+                <div className="form-uno">
+                    <label className="font-bold">Prefijo Tabla<span className="rojo">*</span></label>
+                    <input
+                        name="prefijo"
+                        type="text"
+                        className={editar?"input":"input-disabled"}
+                        onChange={(e) => setData("prefijo", e.target.value)}
+                        value={data.prefijo}
+                        disabled={!editar}
+                    />
+                    {errors.prefijo && <ErrorForm content={errors.prefijo}/>}
+                </div>
+                <div className="form-dos">
                 </div>
             </div>
         </form>

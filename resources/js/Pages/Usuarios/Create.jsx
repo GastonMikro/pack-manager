@@ -74,8 +74,6 @@ function Create() {
         router.post(route('alta_usuario',empresa_id), data)
     }
 
-    console.log(errors)
-
     return (
     <>
     <FlashMessages/>

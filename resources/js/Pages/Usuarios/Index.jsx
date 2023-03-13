@@ -12,8 +12,6 @@ import Breadcrumb from '@/Components/Breadcrumb';
 function Index() {
     const {usuarios, filters, empresa_id,empresa_razon_social} = usePage().props
 
-    console.log(usuarios)
-
     const crumbs = [
         {
             crumb: empresa_razon_social,

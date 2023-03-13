@@ -60,8 +60,11 @@
     border: 1px solid rgb(204, 204, 204) !important;
     border-radius: 5px;
     width: 100%;
-    background-color: #e9ecef;
+    background-color: hsl(0, 0%, 95%);
     box-shadow: 0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%);
+    margin: 0.5rem 0 !important;
+    height: 40.5px;
+    cursor: not-allowed;
 }
 
 .sidebar {
@@ -344,8 +347,8 @@ section {
     width: 100%;
     display: flex;
     margin-right: 2rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+ /*    margin-top: 1rem; */
+/*     margin-bottom: 1rem; */
 }
 .botonera-dos{
     justify-content: space-between;

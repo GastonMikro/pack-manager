@@ -22,6 +22,7 @@ class Empresa extends Model
         'usuario_api',
         'password_api',
         'domicilio_id',
+        'prefijo',
         'activo',
     ];
 

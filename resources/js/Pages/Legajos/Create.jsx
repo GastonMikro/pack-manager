@@ -46,8 +46,6 @@ function Create() {
         generar_usuario: true,
     })
 
-    console.log(data)
-
     useEffect(() => {
         if(usuarioSeleccionado !== "")
         setData((prev) => ({

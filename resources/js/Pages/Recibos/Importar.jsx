@@ -30,17 +30,13 @@ export default function Importar() {
 
     function handleImportar(e) {
         e.preventDefault();
-       /*  router.post(route("recibo.importar", empresa_id), data) */
+        router.post(route("importar_recibos_api", empresa_id), data)
     }
 
     return (
         <>
         <FlashMessages/>
         <Breadcrumb crumbs={crumbs}/>   
-            {/* <div className="m-4 items-center font-bold">
-                <h1 className="text-2xl">Recibos</h1>
-                <h2 className="text-xl mt-2">Generación</h2>
-            </div> */}
             <div className="titulo mt-4"><h3>Para generar los recibos de sueldo ingrese el dato fijo correspondiente al periodo que quiera generar.</h3></div>
             <div className="form-tres">
                 <div className="w-1/2 mb-2">

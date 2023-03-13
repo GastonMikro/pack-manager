@@ -74,7 +74,6 @@ function Index() {
 
     function handleEditar(){router.get(route("ver-datos-empresa", empresaSeleccionada));}
 
-    console.log(empresas)
 
     return (
         <>
@@ -137,7 +136,7 @@ function Index() {
                             ))}
                                 {empresas?.length == 0 &&
                             <tr className="text-center">
-                            <td colSpan="4">No se cargaron datos</td>
+                            <td colSpan="5">No se cargaron datos</td>
                             </tr>}
                         </tbody>
                     </table>

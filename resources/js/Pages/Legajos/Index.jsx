@@ -10,9 +10,13 @@ import Select from "react-select";
 import Swal from 'sweetalert2';
 import Breadcrumb from '@/Components/Breadcrumb';
 import FormatDate from '@/Components/FormatDate';
+import Paginator from '@/Components/Paginator';
 
 function Index() {
-    const {legajos, filters,empresas,empresa_id} = usePage().props
+    const {filters,empresas,empresa_id} = usePage().props
+
+    const legajos =usePage().props.legajos.data
+    const links =usePage().props.legajos.links
     const empresa=empresas.find(empresa=>empresa.id === empresa_id).razon_social
 
     const crumbs = [
@@ -156,11 +160,14 @@ function Index() {
                             ))}
                              {legajos?.length == 0 &&
                             <tr className="text-center">
-                                <td colSpan="5">No se cargaron datos</td>
+                                <td colSpan="6">No se cargaron datos</td>
                             </tr>}
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div className='w-full flex justify-center'>
+                <Paginator links={links} />                  
             </div>
         </>
     );

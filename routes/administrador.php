@@ -19,9 +19,13 @@ Route::GET('backoffice/administrador/empresas/alta', [AdministradorEmpresasContr
 Route::POST('backoffice/administrador/empresas/nuevo', [AdministradorEmpresasController::class, 'store'])->name('alta_empresa');
 
 //Show
-Route::GET('backoffice/administrador/empresas/{empresa}/general',[AdministradorEmpresasController::class,'show'])->name('ver-datos-empresa');
+Route::GET('backoffice/administrador/empresas/{empresa}/general',[AdministradorEmpresasController::class,'datos'])->name('ver-datos-empresa');
 Route::GET('backoffice/administrador/empresas/{empresa}/usuarios',[AdministradorEmpresasController::class,'usuarios'])->name('ver-usuarios-empresa');
 Route::GET('backoffice/administrador/empresas/{empresa}/configuracion',[AdministradorEmpresasController::class,'configuracion'])->name('ver-configuracion-empresa');
 
-Route::PATCH('backoffice/administrador/empresas/{empresa}/editar',[AdministradorEmpresasController::class,'update'])->name('editar_empresa');
+/* Route::PATCH('backoffice/administrador/empresas/{empresa}/editar',[AdministradorEmpresasController::class,'update'])->name('editar_empresa'); */
 Route::POST('backoffice/administrador/empresas/{empresa}/cambio_estado/',[AdministradorEmpresasController::class,'cambioEstado'])->name('estado_empresa');
+
+Route::PATCH('backoffice/administrador/empresas/{empresa}/general/editar',[AdministradorEmpresasController::class,'updateDatosEmpresa'])->name('actualizar-datos-empresa');
+Route::PATCH('backoffice/administrador/empresas/{empresa}/usuarios/editar',[AdministradorEmpresasController::class,'updateUsuariosEmpresa'])->name('actualizar-usuarios-empresa');
+Route::PATCH('backoffice/administrador/empresas/{empresa}/configuracion/editar',[AdministradorEmpresasController::class,'updateConfiguracionEmpresa'])->name('actualizar-configuracion-empresa');

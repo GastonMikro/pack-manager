@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('recibos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('legajo_id');
-            $table->string('file_name');
+            $table->string('path');
             $table->string('periodo');
-            $table->integer('header');
-            $table->string('header_description');
+            $table->integer('dato_fijo');
+            $table->string('dato_fijo_descriptcion');
             $table->decimal('neto',10,2);
             $table->decimal('remunerativo',10,2);
             $table->decimal('retencion',10,2);
@@ -26,11 +26,12 @@ return new class extends Migration
             $table->string('firma_empleador_nombre')->nullable();
             $table->string('hash_value_empleador')->nullable();
             $table->date('firma_empleador_fecha')->nullable();
-            $table->boolean('frima_empleado')->default(false);
+            $table->boolean('firma_empleado')->default(false);
             $table->string('hash_value_empleado')->nullable();
-            $table->date('frima_empleado_fecha')->nullable();
+            $table->date('firma_empleado_fecha')->nullable();
             $table->boolean('opening_request')->default(false);
             $table->boolean('opening_confirmation')->default(false);
+            $table->boolean('estado')->default(true);
 
             $table->foreign('legajo_id')->references('id')->on('legajos');
             $table->timestamps();

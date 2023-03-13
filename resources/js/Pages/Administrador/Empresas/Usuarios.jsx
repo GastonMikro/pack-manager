@@ -10,6 +10,7 @@ import { pickBy } from 'lodash';
 
 function Usuarios() {
     let {empresa, usuarios}=usePage().props
+
     const crumbs = [
         {
             crumb: "Administrador",
@@ -86,37 +87,45 @@ function Usuarios() {
 
     let filtrados= usuarios.filter(usuario =>!data.usuarios?.map(e=>e.id).includes(usuario.id))
 
-    function submit(e) {
-        data.usuarios=data.usuarios.map(usuario => usuario.id)
-        e.preventDefault();
-        router.post(route("editar_empresa",empresa), {
-            _method: 'patch',
-            data: data
-        },{
-            forceFormData: true
-        })
+    const [editar, setEditar] = useState(false)
+
+    function recargarDatos(){
+        router.get(route("ver-usuarios-empresa",empresa))
     }
 
+    function submit(e) {
+        let data2=data
+        data2.usuarios = data2.usuarios.map(usuario =>usuario.id)
+        e.preventDefault();
+        router.patch(route("actualizar-usuarios-empresa",empresa),data2)
+    }
     return (
     <>
         <FlashMessages/>
         <Breadcrumb crumbs={crumbs}/>
         <TabsShowEmpresa tab={`Usuarios`} empresa={empresa}/>
-        <div className="botonera justify-end">
-            <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
-            <Link href={route("index_empresas") }>
-                <button className="btn-rojo ml-2">Volver</button>
-            </Link >
-        </div>
+
+        
+
+        {!editar &&
+        <div className="botonera justify-end mt-0">
+            <button className="btn-verde ml-8" onClick={()=>setEditar(true)}>Editar</button>
+        </div>}
+
+        {editar &&
+        <div className="botonera mt-0 justify-end">
+            <button className="btn-verde ml-8" onClick={submit}>Guardar</button>
+            <button className="btn-rojo ml-2" onClick={recargarDatos}>Cancelar</button>
+        </div>}
 
         <div className="items-center w-full pt-2 px-4">
             <div className="table-container table-seleccionados mb-4">
-                <table className="table text-center">
-                    <thead className="table-header">
+                <table className="table text-center leading-6">
+                    <thead className="table-header leading-6">
                         <tr>
-                            <th>Nombre</th>
-                            <th>C.U.I.L.</th>
-                            <th>Estado</th>
+                            <th className='p-0'>Nombre</th>
+                            <th className='p-0'>C.U.I.L.</th>
+                            <th className='p-0'>Estado</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -124,9 +133,9 @@ function Usuarios() {
                         return (
                             <tr
                                 key={id}
-                                className="table-row"
+                                className={editar?"table-row":"cursor-not-allowed"}
                                 data-id={id}
-                                onClick={()=>handleSacar(id)}
+                                onClick={editar?()=>handleSacar(id):()=>{}}
                             >
                                 <td>{nombre}</td>
                                 <td>{cuil}</td>
@@ -140,7 +149,7 @@ function Usuarios() {
             </div>
         </div>
 
-        {!agregar && <button className="btn-verde w-1/5 ml-8" onClick={()=>{setAgregar(true)}}>
+        {!agregar && <button className={editar?"btn-verde w-1/5 ml-8":"btn-verde w-1/5 ml-8 opacity-50 cursor-not-allowed"} onClick={()=>{setAgregar(true)}} disabled={!editar}>
             Añadir usuarios
         </button>}
 
@@ -170,12 +179,12 @@ function Usuarios() {
             </div>
 
             <div className="table-container mb-4 table-seleccionados px-8">
-                <table className="table text-center">
-                    <thead className="table-header ">
+                <table className="table text-center leading-6">
+                    <thead className="table-header leading-6">
                         <tr>
-                            <th>Nombre</th>
-                            <th>C.U.I.L.</th>
-                            <th>Estado</th>
+                            <th className='p-0'>Nombre</th>
+                            <th className='p-0'>C.U.I.L.</th>
+                            <th className='p-0'>Estado</th>
                         </tr>
                     </thead>
                     <tbody>

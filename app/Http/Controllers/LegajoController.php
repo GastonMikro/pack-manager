@@ -13,6 +13,7 @@ use App\Http\Requests\LegajoRequest;
 use App\Models\Legajo;
 use App\Models\Empresa;
 use App\Models\Usuario;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class LegajoController extends Controller
 {
@@ -29,7 +30,7 @@ class LegajoController extends Controller
             })
             ->with('empresa')
             ->orderBy('numero_legajo','ASC')
-            ->get();
+            ->paginate(8);
         
         return Inertia::render('Legajos/Index',[
             'legajos' =>$legajos,

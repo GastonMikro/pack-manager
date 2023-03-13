@@ -8,9 +8,20 @@ import pickBy from "lodash/pickBy";
 import Search from "@/Components/Search";
 import Swal from 'sweetalert2';
 import Breadcrumb from '@/Components/Breadcrumb';
+import Paginator from '@/Components/Paginator';
+import Select from "react-select";
 
 function Index() {
-    const {usuarios, filters} = usePage().props
+    const {filters, empresas} = usePage().props
+
+    empresas.map((empresa) => {
+        empresa.label = empresa.razon_social
+        empresa.value = empresa.id
+        return empresa
+    })
+
+    const usuarios = usePage().props.usuarios.data
+    const links = usePage().props.usuarios.links
 
     const crumbs = [
         {
@@ -24,7 +35,11 @@ function Index() {
     ];
 
     //Búsqueda
-    const [values, setValues] = useState({search: filters.search || "",});
+    const [values, setValues] = useState(
+        {search: filters.search || "",
+        empresa:filters.empresa || "",});
+
+
     useEffect(() => {
         if (prevValues) {
             const query = Object.keys(pickBy(values)).length
@@ -79,13 +94,34 @@ function Index() {
         <FlashMessages/>
         <Breadcrumb crumbs={crumbs}/>   
             <div className="botonera-dos items-center">
-                <div className="w-1/3 ml-4">
-                    <Search
-                        placeholder="Buscar por nombre o C.U.I.L"
-                        parentValues={values}
-                        handleSearch={handleSearch}
+                <div className='flex w-1/2 justify-around'>
+                    <div className="w-1/2 mx-4">
+                        <Search
+                            placeholder="Buscar por nombre o C.U.I.L"
+                            parentValues={values}
+                            handleSearch={handleSearch}
+                        />
+                    </div>
+                    <Select
+                        placeholder="Seleccionar Empresa"
+                        name="empresa"
+                        options={empresas}
+                        onChange={(option) => setValues(values => ({
+                            ...values,
+                            empresa: option.value
+                        }))}
+                        className="py-2 w-1/2"
+                        styles={{
+                            control: (base) => ({
+                                ...base,
+                                '&:hover': { borderColor: '#b03407' },
+                                border: '1px solid lightgray', 
+                                boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
+                            }),
+                        }}
                     />
                 </div>
+            
                 <div>
                     {usuarioSeleccionado !== "" && (
                             <button className="btn-claro mx-2" onClick={handleEditar}>Editar</button>)}
@@ -95,7 +131,7 @@ function Index() {
                         <button className="btn-verde mr-2" onClick={handleHabilitacion}>Habilitar</button>)}
 
                     <Link href={route("admin_nuevo_usuario")}>
-                        <button className="btn-nuevo mr-8">Nuevo</button>
+                        <button className="btn-nuevo mr-4">Nuevo</button>
                     </Link>
                 </div>
             </div>
@@ -133,6 +169,10 @@ function Index() {
                         </tr>}
                     </tbody>
                 </table>
+            </div>
+            
+            <div className='w-full flex justify-center'>
+                <Paginator links={links}/>                  
             </div>
         </>
     );

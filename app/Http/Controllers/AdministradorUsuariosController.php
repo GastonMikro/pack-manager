@@ -13,6 +13,7 @@ use App\Models\Empresa;
 use App\Http\Requests\UsuarioRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class AdministradorUsuariosController extends Controller
 {
@@ -23,12 +24,16 @@ class AdministradorUsuariosController extends Controller
             $query->where('nombre','like','%' . request()->get('search')  . '%')
             ->orWhere('cuil','like','%' . request()->get('search')  . '%');
         })
+        ->when($request->has('empresa'),function($query){
+            $query->whereRelation('empresas','empresa_id',request()->get('empresa'));
+        })
         ->orderBy('nombre','ASC')
-        ->get();
+        ->paginate(8);
 
         return Inertia::render('Administrador/Usuarios/Index',[
             'usuarios' =>$usuarios,
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search, empresa']),
+            'empresas' =>Empresa::all(),
         ]);
     }
 

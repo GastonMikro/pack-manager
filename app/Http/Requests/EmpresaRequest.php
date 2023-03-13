@@ -41,10 +41,45 @@ class EmpresaRequest extends FormRequest
                 'password_api' => 'nullable|string',
                 'logo_file_path' => 'nullable|file',
                 'usuarios' => 'array', 
+                'prefijo' => 'required|string',
             ];
         
         }elseif($this->getMethod() === 'PATCH'){
-            $rules = [
+            if($this->routeIs('actualizar-datos-empresa'))
+            {$rules = [
+                'data.razon_social' => 'required|string', Rule::unique('empresas','razon_social')->ignore($this->empresa->id),
+                'data.cuit' => ['required' , 'size:13' , Rule::unique('empresas' , 'cuit')->ignore($this->empresa->id), new CustomCuit],
+                'data.domicilio' => 'required|array',
+                'data.domicilio.domicilio' => 'required|string',
+                'data.domicilio.localidad_id' => 'required|integer|exists:localidades,id',
+                'data.logo_file_path' => [
+                'sometimes',
+                 function ($attribute, $value, $fail) {
+                    if (is_string($value)) {
+                        return validator([$attribute => $value], [$attribute => 'string'])->passes();
+                    } elseif ($value instanceof UploadedFile) {                         
+                        return validator([$attribute => $value], [$attribute => 'file'])->passes();
+                    }
+                    $fail($attribute.' must be a file or a string.');
+                },
+                ],
+
+            ];}
+
+            if($this->routeIs('actualizar-usuarios-empresa'))
+            {$rules = [
+                'usuarios' => 'array', 
+            ];}
+
+            if($this->routeIs('actualizar-configuracion-empresa'))
+            {$rules = [
+                'url_api' => 'nullable|string',
+                'db_api' => 'nullable|string',
+                'usuario_api' => 'nullable|string',
+                'password_api' => 'nullable|string',
+                'prefijo' => 'required|string',
+            ];}
+           /*  $rules = [
                 'data.razon_social' => 'required|string', Rule::unique('empresas','razon_social')->ignore($this->empresa->id),
                 'data.cuit' => ['required' , 'size:13' , Rule::unique('empresas' , 'cuit')->ignore($this->empresa->id), new CustomCuit],
                 'data.domicilio' => 'required|array',
@@ -65,8 +100,9 @@ class EmpresaRequest extends FormRequest
                     $fail($attribute.' must be a file or a string.');
                 },
                 ],
-                'usuarios' => 'array', 
-            ];
+                'data.usuarios' => 'array', 
+                'data.prefijo' => 'required|string',
+            ]; */
         }
         return $rules;
     }

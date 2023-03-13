@@ -31,10 +31,11 @@ function Create() {
         cuit: "",
         domicilio: {},
         logo_file_path:null,
-        url_api: "",
+        url_api: "http://127.0.0.1:8004",
         db_api: "",
         usuario_api: "",
         password_api: "",
+        prefijo: "",
     })
 
     function handleCuit(e) {
@@ -142,6 +143,7 @@ function Create() {
                         onChange={(e) => {setArchivoElegido(e.target.files[0])}}
                         hidden
                         id="logo"
+                        accept="image/*"
                     />
                         <label htmlFor="logo" className="cursor-pointer">
                             <img src="/img/Cambiar.png" alt="Cambiar Logo" className='h-8'/>
@@ -270,7 +272,7 @@ function Create() {
                 </div>
             </div>
 
-            <h3 className="flex justify-start ml-8 font-bold my-2 border-t-2 pt-4">Configuración</h3>
+            <h3 className="flex justify-start ml-8 font-bold my-2 border-t-2 pt-4">Configuración API Tango</h3>
             <div className="form-padre">
                 <div className="form-uno">
                     <label className="font-bold">URL<span className="rojo">*</span></label>
@@ -317,6 +319,22 @@ function Create() {
                         value={data.password_api}
                     />
                     {errors.password_api && <ErrorForm content={errors.password_api}/>}
+                </div>
+            </div>
+            <h3 className="flex justify-start ml-8 font-bold my-2 border-t-2 pt-4">Configuración</h3>
+            <div className="form-padre mb-2">
+                <div className="form-uno">
+                    <label className="font-bold">Prefijo Tabla<span className="rojo">*</span></label>
+                    <input
+                        name="prefijo"
+                        type="text"
+                        className="input"
+                        onChange={(e) => setData("prefijo", e.target.value)}
+                        value={data.prefijo}
+                    />
+                    {errors.prefijo && <ErrorForm content={errors.prefijo}/>}
+                </div>
+                <div className="form-dos">
                 </div>
             </div>
         </form>

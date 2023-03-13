@@ -55,7 +55,7 @@ function Show() {
         setData("cuit", e.target.value);
     }
 
-    const [domicilio, setDomicilio] = useState( empresa.domicilio[0] );
+    const [domicilio, setDomicilio] = useState(empresa.domicilio[0]);
 
     useEffect(() => {
         if (Object.keys(domicilio).length > 0) {
@@ -110,9 +110,11 @@ function Show() {
         }
     },[archivoElegido])
 
+    const [editar, setEditar] = useState(false);
+
     function submit(e) {
         e.preventDefault();
-        router.post(route("editar_empresa",empresa), {
+        router.post(route("actualizar-datos-empresa",empresa), {
             _method: 'patch',
             data: data
         },{
@@ -120,30 +122,41 @@ function Show() {
         })
     }
 
+    function recargarDatos(){
+        router.get(route("ver-datos-empresa",empresa));
+    }
+
     return (
     <>
         <FlashMessages/>
         <Breadcrumb crumbs={crumbs}/>
         <TabsShowEmpresa tab={`Datos`} empresa={empresa}/>
+
+        {!editar &&
         <div className="botonera justify-end">
-            <button className="btn-verde ml-8" onClick={submit}>Aceptar</button>
-            <Link href={route("index_empresas") }>
-                <button className="btn-rojo ml-2">Volver</button>
-            </Link >
-        </div>
+            <button className="btn-verde ml-8" onClick={()=>setEditar(true)}>Editar</button>
+        </div>}
+
+        {editar &&
+        <div className="botonera justify-end">
+            <button className="btn-verde ml-8" onClick={submit}>Guardar</button>
+            <button className="btn-rojo ml-2" onClick={recargarDatos}>Cancelar</button>
+        </div>}
 
         <div className="w-10/12 mx-auto flex flex-col justify-center items-center pr-4">
-            <img src={avatar} alt="Logo Empresa" className="w-1/4 mb-4"/>
+            <img src={avatar} alt="Logo Empresa" className="w-1/5 mb-2"/>
             <div>
                 <input
                     type="file"
                     onChange={(e) => {setArchivoElegido(e.target.files[0])}}
                     hidden
                     id="logo"
+                    accept="image/*"
+                    disabled={!editar}
                 />
-                    <label htmlFor="logo" className="cursor-pointer">
-                        <img src="/img/Cambiar.png" alt="Cambiar Logo" className='h-8'/>
-                    </label>
+                <label htmlFor="logo" className={editar?"cursor-pointer":"cursor-not-allowed"}>
+                    <img src="/img/Cambiar.png" alt="Cambiar Logo" className='h-8'/>
+                </label>
                 {errors.logo_file_path && <ErrorForm content={errors.logo_file_path}/>}
             </div>
         </div>
@@ -156,9 +169,10 @@ function Show() {
                     <input
                         name="cuit"
                         type="text"
-                        className="input"
+                        className={editar?"input":"input-disabled"}
                         onChange={(e) => handleCuit(e)}
                         value={data.cuit}
+                        disabled={!editar}
                     />
                     {errors['data.cuit'] && <ErrorForm content={errors['data.cuit']}/>}
                 </div>
@@ -167,9 +181,10 @@ function Show() {
                     <input
                         name="razon_social"
                         type="text"
-                        className="input"
+                        className={editar?"input":"input-disabled"}
                         onChange={(e) => setData("razon_social", e.target.value)}
                         value={data.razon_social}
+                        disabled={!editar}
                     />
                     {errors['data.razon_social'] && <ErrorForm content={errors['data.razon_social']}/>}
                 </div>
@@ -195,8 +210,10 @@ function Show() {
                                         border: '1px solid lightgray', 
                                         boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
                                     }),
+                                    singleValue: (styles) => {return {...styles,color: 'black',}}
                                 }}
                                 defaultValue={provincia|| ""}
+                                isDisabled={!editar}
                             />
                         </div>
                         <div className="w-1/3 mx-8">
@@ -216,8 +233,10 @@ function Show() {
                                         border: '1px solid lightgray', 
                                         boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
                                     }),
+                                    singleValue: (styles) => {return {...styles,color: 'black',}}
                                 }}
                                 defaultValue={depto||""}
+                                isDisabled={!editar}
                             />
                         </div>
                         <div className="w-1/3">
@@ -244,8 +263,10 @@ function Show() {
                                         border: '1px solid lightgray', 
                                         boxShadow: "0px 4px 5px rgb(0 0 0 / 14%), 0px 1px 10px rgb(0 0 0 / 12%), 0px 2px 4px rgb(0 0 0 / 20%)"
                                     }),
+                                    singleValue: (styles) => {return {...styles,color: 'black',}}
                                 }}
                                 defaultValue={localidad[0] || ""}
+                                isDisabled={!editar}
                             />
                             {errors["domicilio.localidad_id"] && <ErrorForm content={errors["domicilio.localidad_id"]}/>}
                         </div>
@@ -255,7 +276,7 @@ function Show() {
                         <input
                             type="text"
                             name="domicilio"
-                            className="input"
+                            className={editar?"input":"input-disabled"}
                             onChange={(e) =>
                                 {setDomicilio((prev) => ({
                                     ...prev,
@@ -265,11 +286,13 @@ function Show() {
                             }
                             }
                             value={data?.domicilio.domicilio|| ""}
+                            disabled={!editar}
                         />
                             {errors["domicilio.domicilio"] && <ErrorForm content={errors["domicilio.domicilio"]}/>}
                     </div>
                 </div>
             </div>
+           
         </form>
     </>
     );

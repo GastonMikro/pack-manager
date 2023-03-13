@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('db_api')->nullable();
             $table->string('usuario_api')->nullable();
             $table->string('password_api')->nullable();
+            $table->string('prefijo')->unique();
             $table->boolean('activo')->default(true);
             
             $table->timestamps();

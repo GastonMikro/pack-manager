@@ -12,16 +12,23 @@ use App\Models\Provincia;
 use App\Models\Usuario;
 use App\Http\Requests\EmpresaRequest;
 use App\Services\DomicilioService;
+use App\Services\EmpresaService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
 
 class AdministradorEmpresasController extends Controller
 {
     protected DomicilioService $domicilioService;
-
-    public function __construct(DomicilioService $domicilioService){
+    protected EmpresaService $empresaService;
+   
+    public function __construct(DomicilioService $domicilioService, EmpresaService $empresaService)
+    {
         $this->domicilioService = $domicilioService;
+        $this->empresaService = $empresaService;
     }
 
     public function index(Request $request): Response
@@ -44,7 +51,7 @@ class AdministradorEmpresasController extends Controller
         ]);
     }
 
-    public function show(Empresa $empresa): Response
+    public function datos(Empresa $empresa): Response
     {
         $empresa->domicilio = $empresa->domicilio()->get();
         $empresa->logo_file_path = Storage::url($empresa->logo_file_path);
@@ -70,7 +77,6 @@ class AdministradorEmpresasController extends Controller
 
         return Inertia::render('Administrador/Empresas/Usuarios',[
             'empresa' => $empresa,
-           /*  'usuarios' => Usuario::all(), */
             'usuarios' => $usuarios,
         ]);
     }
@@ -95,27 +101,36 @@ class AdministradorEmpresasController extends Controller
     {
         $data = $request->validated();
         DB::beginTransaction();
-        $domicilio = $this->domicilioService->nuevo($data['domicilio']);
-        $empresa = Empresa::create([
-            'razon_social' => $data['razon_social'],
-            'cuit' => $data['cuit'],
-            'url_api' => $data['url_api'],
-            'db_api' => $data['db_api'],
-            'usuario_api' => $data['usuario_api'],
-            'password_api' => $data['password_api'],
-            'domicilio_id' => $domicilio->id,
-        ]);
-        $archivo = $data['logo_file_path'];
-        if($archivo instanceof UploadedFile){
-            $path = $archivo->storeAs('public/' . $empresa->id,'logo.' . $archivo->extension());
-            $empresa->logo_file_path = $path;
-            $empresa->save();
-        }
-        DB::commit();
-        return redirect()->route('index_empresas')->with('exito','Empresa Creada!');
+            $domicilio = $this->domicilioService->nuevo($data['domicilio']);
+            $empresa = Empresa::create([
+                'razon_social' => $data['razon_social'],
+                'cuit' => $data['cuit'],
+                'url_api' => $data['url_api'],
+                'db_api' => $data['db_api'],
+                'usuario_api' => $data['usuario_api'],
+                'password_api' => $data['password_api'],
+                'domicilio_id' => $domicilio->id,
+                'prefijo' => $data['prefijo'],
+            ]);
+
+            $archivo = $data['logo_file_path'];
+            if($archivo instanceof UploadedFile){
+                $path = $archivo->storeAs('public/' . $empresa->id,'logo.' . $archivo->extension());
+                $empresa->logo_file_path = $path;
+                $empresa->save();
+            }
+
+            DB::commit();
+
+            $empresa_id =  $empresa->id;
+            $prefijo = $data['prefijo'];
+
+            $this->empresaService->createRecibosTable($prefijo, $empresa_id);
+
+            return redirect()->route('index_empresas')->with('exito','Empresa Creada!');
     }
 
-    public function update(EmpresaRequest $request,Empresa $empresa)
+   /*  public function update(EmpresaRequest $request,Empresa $empresa)
     {
         $data = $request->validated();
     
@@ -127,6 +142,7 @@ class AdministradorEmpresasController extends Controller
         $usuario_api = $data['data']['usuario_api'];
         $password_api = $data['data']['password_api'];
         $logo_file_path = $data['data']['logo_file_path'];
+        $prefijo = $data['data']['prefijo'];
 
         DB::beginTransaction();
         $domicilio = $this->domicilioService->nuevo($domicilio);
@@ -138,9 +154,39 @@ class AdministradorEmpresasController extends Controller
             'db_api' => $db_api,
             'usuario_api' => $usuario_api,
             'password_api' => $password_api,
+            'prefijo' => $prefijo,
         ]);
 
-        $empresa->usuarios()->sync($data['usuarios']);
+        $empresa->usuarios()->sync($data['data']['usuarios']);
+
+        $archivo = $logo_file_path;
+        if($archivo instanceof UploadedFile){
+            $path = $archivo->storeAs('public/' . $empresa->id,'logo.' . $archivo->extension());
+            $empresa->logo_file_path = $path;
+            $empresa->save();
+        }
+
+        DB::commit();
+
+        $request->session()->flash('exito', 'Empresa Editada!');
+    } */
+
+    public function updateDatosEmpresa(EmpresaRequest $request,Empresa $empresa)
+    {
+        $data = $request->validated();
+    
+        $razon_social = $data['data']['razon_social'];
+        $cuit = $data['data']['cuit'];
+        $domicilio = $data['data']['domicilio'];
+        $logo_file_path = $data['data']['logo_file_path'];
+
+        DB::beginTransaction();
+        $domicilio = $this->domicilioService->nuevo($domicilio);
+        $empresa->update([
+            'razon_social' => $razon_social,
+            'cuit' => $cuit,
+            'domicilio_id' => $domicilio->id,
+        ]);
 
         $archivo = $logo_file_path;
         if($archivo instanceof UploadedFile){
@@ -153,6 +199,35 @@ class AdministradorEmpresasController extends Controller
 
         $request->session()->flash('exito', 'Empresa Editada!');
     }
+
+    public function updateUsuariosEmpresa(EmpresaRequest $request,Empresa $empresa)
+    {
+        $data = $request->validated();
+        DB::beginTransaction();
+        $empresa->usuarios()->sync($data['usuarios']);
+        DB::commit();
+
+        $request->session()->flash('exito', 'Empresa Editada!');
+    }
+
+    public function updateConfiguracionEmpresa(EmpresaRequest $request,Empresa $empresa)
+    {
+        $data = $request->validated();
+    
+        DB::beginTransaction();
+        $empresa->update([
+            'url_api' => $data['url_api'],
+            'db_api' => $data['db_api'],
+            'usuario_api' => $data['usuario_api'],
+            'password_api' => $data['password_api'],
+            'prefijo' => $data['prefijo'],
+        ]);
+
+        DB::commit();
+
+        $request->session()->flash('exito', 'Empresa Editada!');
+    }
+
 
     public function cambioEstado(Request $request, Empresa $empresa){
         $empresa->activo = !$empresa->activo;

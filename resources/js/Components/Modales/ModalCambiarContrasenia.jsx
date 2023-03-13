@@ -19,8 +19,6 @@ export default function ModalCambiarContrasenia({usuario, handleClick}) {
         }) */
     }
 
-    console.log(data)
-
     return (
         <>
             <ShadeScreen handleClick={handleClick}/>
